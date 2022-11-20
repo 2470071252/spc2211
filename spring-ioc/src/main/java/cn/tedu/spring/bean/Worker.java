@@ -2,6 +2,8 @@ package cn.tedu.spring.bean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -10,8 +12,9 @@ import javax.annotation.Resource;
 public class Worker {
     Logger logger = LoggerFactory.getLogger(Worker.class);
     private String name = "光头强";
-//
-//    @Autowired
+
+    //@Autowired
+    //@Resource
 //    public Worker(@Qualifier("saw") Tool tool){
 //        this.tool = tool;
 //    }
@@ -19,10 +22,13 @@ public class Worker {
     //@Autowired
     //设置beanid, 按照名字匹配安装
     // @Resource(name = "saw")
+    //@Autowired
+    //@Qualifier("saw")
+    @Resource(name = "saw")
     private Tool tool;
 
     //@Autowired
-    @Resource(name = "saw")
+    //@Resource(name = "saw")
     public void demo(Tool tool) {
         this.tool = tool;
     }

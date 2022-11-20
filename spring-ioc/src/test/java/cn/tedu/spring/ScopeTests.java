@@ -10,13 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 @SpringBootTest
 public class ScopeTests {
     Logger logger = LoggerFactory.getLogger(ScopeTests.class);
 
-    @Autowired
+    @Resource
+    //@Autowired
     ApplicationContext context;
 
     @Test
