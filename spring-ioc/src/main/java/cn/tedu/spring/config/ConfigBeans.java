@@ -14,6 +14,8 @@ import java.util.List;
 public class ConfigBeans {
     /**
      * 使用@Bean显示创建Java对象
+     * @Bean 创建JavaBean 时候BeanID就是方法名称
+     * Bean ID: names
      */
     @Bean
     public List<String> names(){
@@ -21,5 +23,27 @@ public class ConfigBeans {
         names.add("Tom");
         names.add("Jerry");
         return names;
+    }
+
+    /**
+     * Bean ID: mobilePhone
+     */
+    @Bean
+    public List<String> mobilePhone(){
+        ArrayList<String> list = new ArrayList<>();
+        list.add("119");
+        list.add("110");
+        return list;
+    }
+
+    /**
+     * Bean ID: cities
+     */
+    @Bean
+    public List<String> cities(){
+        ArrayList<String> list = new ArrayList<>();
+        list.add("北京");
+        list.add("上海");
+        return list;
     }
 }
