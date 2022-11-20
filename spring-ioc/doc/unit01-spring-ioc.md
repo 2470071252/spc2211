@@ -144,6 +144,17 @@ logging.level.cn.tedu.springioc = debug
 
 ## 使用组件扫描隐式创建对象
 
+关于 隐式 和 显示:
+
+- 自动类型转换, 不需要写任何代码, 就会自动发生, "隐式"类型转换
+
+- 强制类型转换, 需要明确使用类型转换运算符"(类型)" 明确说明在计算, 称为"显示"类型转换
+
+Spring 创建组件:
+
+- 隐式创建组件(Java Bean):  @Component 注解标注在类上, Spring会自动的创建类的对象.
+- 显示创建组件(Java Bean): @Bean注解, 在配置类中创建Java对象, 明确使用new运算创建了对象.
+
 隐式创建对象：
 1. 在SpringBoot包的子包中类上标注@Compoment
 2. 使用时候使用@Autowired注入组件

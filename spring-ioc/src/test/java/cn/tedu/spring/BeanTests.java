@@ -33,4 +33,4 @@ public class BeanTests {
     void list(){
         logger.debug("list: {}", list);
     }
- }
+}
