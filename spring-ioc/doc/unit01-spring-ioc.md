@@ -260,12 +260,15 @@ public class BeanTests {
 
 ## 使用 ApplicationContext 获取Bean
 
+ApplicationContext == 应用程序上下文 == Spring容器
+
 ApplicationContext 直接翻译为应用程序上下文：
 - 是Spring的核心，简单理解ApplicationContext就是Spring容器
 - 所有IOC管理的JavaBean组件都在ApplicationContext对象中
 - 可以通过ApplicationContext的API方法获取任何被Spring管理的Bean对象
-- 有两种获取 ApplicationContext 方式
-   - SpringApplication.run(ConfigBeans.class);
+   - getBean(类型)  getBean(BeanID)
+- Spring Boot中有两种获取 ApplicationContext 方式
+   - Spring Boot 的启动方法SpringApplication.run(ConfigBeans.class);返回了 ApplicationContext 
    - 注入 ApplicationContext
    
 
@@ -297,6 +300,26 @@ public class ApplicationContextTests {
     }
 }
 ```
+## 关于**@SpringBootApplication**注解
+
+- @SpringBootApplication  是组合注解, 是由元注解组合而成
+- 元注解: 组成组合注解中的每个注解称为元注解
+- 使用多个元注解标注代码和使用组合注解标注代码作用一样!
+
+```java
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Inherited
+@SpringBootConfiguration
+@EnableAutoConfiguration
+@ComponentScan(excludeFilters = { @Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),
+		@Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class) })
+public @interface SpringBootApplication {...}
+```
+
+
+
 ## Spring Boot 自动组件扫描
 
 Spring Boot 会自动开启组件扫描功能：
@@ -596,6 +619,8 @@ public class DITests {
 
 简单理解：@Autowired 和 @Resource区别
 
+大部分情况下是一样的!
+
 - 注入匹配规则不同：
   - @Autowired 先匹配类型， 在匹配名称， @Resource先匹配名称， 再匹配类型。
 - 支持的注入方式不同：
@@ -603,8 +628,8 @@ public class DITests {
   - @Resource：  属性 方法
 - 注解来源不同：
   - @Autowired Spring 提供
-  - @Resource Java提供
-- @Autowired 包含必须输入功能！
+  - @Resource Java提供(JSR-250)
+- @Autowired 包含是否必须输入功能！ @Resource 没有!
 
 推荐使用 @Autowired ！！！
 

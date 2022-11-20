@@ -24,7 +24,8 @@ public class Worker {
     // @Resource(name = "saw")
     //@Autowired
     //@Qualifier("saw")
-    @Resource(name = "saw")
+    //@Autowired(required = false)
+    @Resource
     private Tool tool;
 
     //@Autowired
