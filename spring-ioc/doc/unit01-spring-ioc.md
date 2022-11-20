@@ -641,7 +641,7 @@ Java 中多个注解可以组合拼接为一个新注解
 - 没有参与拼接的注解成为 元注解
 - 新注解具备全部全部元注解的功能
 
-@Service注解的源码：
+@Configuration注解的源码：
 
 ```java
 @Target({ElementType.TYPE})
@@ -707,7 +707,7 @@ Spring 提供了创建Bean组件的组合注解
 - @Service 用在业务层组件
 - @Repository 用在数据访问层组件
 - @Controller 和 @RestController 用在 Spring MVC 控制器
-- @Configuration 用在Spring Java 配置累上
+- @Configuration 用在Spring Java 配置类上
 
 
 甚至可以自定义自己的组合注解。
@@ -731,3 +731,21 @@ public class UserService {
 ```
 
 注意： 组合注解和元注解都是相对概念， 一个组合注解也可以作为元注解，再次组合为新注解。
+
+
+
+## 关于MyBatis的Mapper接口
+
+- Mapper接口 需要配置 @MapperScan,  是MyBatis提供的注解, 
+- MyBatis 在运行期间, 根据@MapperScan指定的文件夹, 扫描Mapper接口
+- 找到Mapper接口, 就利用Java的动态代理, 创建Mapper接口的实现类的对象!
+- 实现的逻辑就会自动执行SQL完成数据访问功能.
+
+
+
+
+
+
+
+
+
