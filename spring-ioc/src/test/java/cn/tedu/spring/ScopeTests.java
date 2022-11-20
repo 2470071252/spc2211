@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 
+import java.util.List;
+
 @SpringBootTest
 public class ScopeTests {
     Logger logger = LoggerFactory.getLogger(ScopeTests.class);
@@ -31,5 +33,16 @@ public class ScopeTests {
     void single(){
         Single single = context.getBean(Single.class);
         logger.debug("{}", single);
+    }
+
+    @Test
+    void scopeTests(){
+        List<String> list1 = context.getBean("provinceList", List.class);
+        List<String> list2 = context.getBean("provinceList", List.class);
+        logger.debug("单例 {}", list1==list2);
+        List<String> list3 = context.getBean("cityList", List.class);
+        List<String> list4 = context.getBean("cityList", List.class);
+        logger.debug("原形 {}", list3==list4);
+
     }
 }
