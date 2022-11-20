@@ -1,5 +1,6 @@
 package cn.tedu.spring;
 
+import cn.tedu.bean.Single;
 import cn.tedu.spring.bean.PrototypeBean;
 import cn.tedu.spring.bean.SingletonBean;
 import org.junit.jupiter.api.Test;
@@ -24,5 +25,11 @@ public class ScopeTests {
         PrototypeBean bean3 = context.getBean(PrototypeBean.class);
         PrototypeBean bean4 = context.getBean(PrototypeBean.class);
         logger.debug("原形 {}", bean3 == bean4);
+    }
+
+    @Test
+    void single(){
+        Single single = context.getBean(Single.class);
+        logger.debug("{}", single);
     }
 }
