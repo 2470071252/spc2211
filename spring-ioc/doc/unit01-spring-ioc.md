@@ -1,4 +1,4 @@
-# Spring IOC/DI Day01
+# Unit01 Spring IOC/DI 
 
 ## Spring
 
@@ -6,6 +6,72 @@ Spring 核心功能：IOC和AOP
 
 IOC： 控制反转
 AOP： 面向切面编程
+
+## 原生使用Spring
+
+原生使用Spring非常繁琐, 才出现Spring Boot!
+
+使用步骤:
+
+1. 创建Maven项目, 导入Spring核心包
+
+   ```xml
+   <dependency>
+       <groupId>org.springframework</groupId>
+       <artifactId>spring-context</artifactId>
+       <version>5.3.20</version>
+   </dependency>
+   ```
+
+2. 创建Spring 的配置类, 
+
+   1. 设定组件扫描
+
+   ```java
+   @Configuration
+   @ComponentScan("cn.tedu.spring")
+   public class ContextConfig {
+   }
+   ```
+
+3. 创建被管理的Bean
+
+   ```java
+   @Component
+   public class DemoBean {
+       @Override
+       public String toString() {
+           return "Hello World";
+       }
+   }
+   ```
+
+4. 创建Spring容器(应用程序上下文)
+
+   ```java
+   public class Application {
+       public static void main(String[] args) {
+           ApplicationContext context =
+                   new AnnotationConfigApplicationContext(ContextConfig.class);
+   
+           DemoBean demoBean = context.getBean(DemoBean.class);
+           System.out.println(demoBean);
+       }
+   }
+   ```
+
+5. 使用Bean
+
+   ```java
+   System.out.println(demoBean);
+   ```
+
+Spring 和Spring Boot的区别?
+
+- Spring, 特指Spring框架, 是Spring家族软件的基石, 核心功能: IOC/AOP
+- Spring Boot 在Spring基础上, 提供了组件依赖管理, 自动配置, 打包, 开箱即用 
+
+
 
 ## Spring Boot 中使用日志
 
