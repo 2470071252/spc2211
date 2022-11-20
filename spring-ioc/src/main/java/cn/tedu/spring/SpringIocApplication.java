@@ -8,7 +8,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
 import java.util.List;
-
+/*
+ * @SpringBootApplication 的元注解包含 @Configuration
+ * 所以 被标注的启动类 SpringIocApplication 是配置类
+ *
+ * @SpringBootApplication 包含 @ComponentScan, 所以
+ * 启动后自动开启组件扫描功能, 扫描范围: 当前包和子包中
+ * - 凡是标注@Component都创建为Java Bean
+ * - 凡是标注@Configuration都创建为Java Bean, 并且作为配置类
+ *
+ */
 @SpringBootApplication
 public class SpringIocApplication {
 
