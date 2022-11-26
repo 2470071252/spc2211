@@ -6,7 +6,6 @@
 2. Spring Boot 以及自动配置原理， 也是经典面试题目
 
 
-
 ## 生命周期管理 life-cycle
 
 本次课程的目标就是研究Spring的完整Bean生命周期管理过程。
@@ -27,9 +26,147 @@ Spring 为了方便用户扩展功能，提供了在Bean生命周期管理过程
     - Spring会在JVM上挂“钩子”，关闭JVM时候，钩子会自动调用Spring容器的关闭方法
     - 这个方法不是绝对可靠，直接关闭进程时候不会执行
     - 只有单例对象，销毁时候才会执行销毁方法
+    
+案例：
+```java
+/**
+ * 标签服务
+ * concurrent 并发
+ */
+@Component
+public class TagService {
+    Logger logger = LoggerFactory.getLogger(TagService.class);
+    /**
+     * 本地缓存，缓存了标签信息
+     */
+    private final CopyOnWriteArrayList<String> tags = new CopyOnWriteArrayList<>();
+
+    @PostConstruct  //创建对象以后调用
+    public void initTags() {
+        tags.add("应季");
+        tags.add("爆款");
+        tags.add("进口");
+        tags.add("生鲜");
+        tags.add("健身");
+        logger.debug("初始化标签{}", tags);
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    @PreDestroy //销毁对象之前调用
+    public void destroy() {
+        logger.debug("清空标签{}", tags);
+        tags.clear();
+    }
+}
+```
+
+@Bean Bean的生命周期管理方法
 - @Bean 注解使用属性设置销毁方法
     - @Bean(initMethod="populateCache", destroyMethod="flushCache")
 - 可以根据实际业务需要执行这两个方法
+
+案例：Bean 组件
+```java
+public class CategoryService {
+    Logger logger = LoggerFactory.getLogger(CategoryService.class);
+    /**
+     * 分类缓存
+     */
+    private CopyOnWriteArrayList<Category> categoryList;
+
+    public void init() {
+        categoryList = new CopyOnWriteArrayList<>();
+        categoryList.add(new Category("1","家电"));
+        categoryList.add(new Category("2","食品"));
+        categoryList.add(new Category("2","服装"));
+        logger.debug("初始化分类{}", categoryList);
+    }
+
+    public List<Category> getCategoryList() {
+        return categoryList;
+    }
+
+    public void destroy(){
+        logger.debug("销毁 {}", categoryList);
+        categoryList.clear();
+    }
+}
+```
+
+配置类：
+```java
+@Configuration
+public class ServiceConfig {
+
+    /**
+     * @Bean 的属性调用生命周期管理方法
+     * initMethod 初始化方法 等同与 @PostConstruct
+     * destroyMethod 销毁方法 等同与 @PreDestroy
+     * initMethod=“初始化方法名”
+     * destroyMethod=“销毁方法名”
+     */
+    @Bean(initMethod = "init", destroyMethod = "destroy")
+    public CategoryService categoryService() {
+        return new CategoryService();
+    }
+}
+```
+
+Java 虚拟机提供了“系统钩子”，正常关闭系统时候可以自动执行钩子线程：
+```java
+public class SystemHookDemo {
+    public static void main(String[] args) {
+        /*
+         * Runtime 运行时， 代表正在运行的Java虚拟机！
+         * runtime 可以获取当前虚拟机全部的信息
+         * runtime 允许挂“钩子”，钩子是一个线程，
+         * 在JVM关闭时候， 会自动执行这个线程
+         */
+        Runtime runtime = Runtime.getRuntime();
+        long bytes = runtime.totalMemory();
+        System.out.println("当前内存数："+bytes);
+        //为虚拟机挂上关闭时候的钩子
+        runtime.addShutdownHook(new DemoHook());
+        System.out.println("关闭系统");
+    }
+}
+
+class DemoHook extends Thread{
+    @Override
+    public void run() {
+        System.out.println("JVM正在关闭");
+    }
+}
+```
+
+Spring 会在Java虚拟机上挂上钩子，感知虚拟机的关闭，原理如下：
+```java
+/**
+ * 在Spring 中为系统挂上一个自己的系统关闭钩子
+ */
+@Component
+public class HookBean extends Thread {
+
+    static final Logger logger = LoggerFactory.getLogger(HookBean.class);
+
+    @PostConstruct
+    public void init() {
+        logger.debug("为JVM挂钩子");
+        Runtime.getRuntime().addShutdownHook(this);
+    }
+
+    @Override
+    public void run() {
+        logger.debug("系统正在关闭");
+    }
+}
+```
+
+
+
 
 关于 在Bean上标注了@Scope("prototype")
 
@@ -39,6 +176,37 @@ Spring 为了方便用户扩展功能，提供了在Bean生命周期管理过程
 - 创建对象时候会自动调用 @PostContruct 方法
 - 多个实例时候因为对象太多，Spring将不再管理销毁方法， 也就关闭Spring时候不会调用 @PreDestroy方法
 - 请自行销毁对象（设置引用为空），由GC销毁
+
+案例：
+```java
+@Component
+@Scope("prototype")
+public class NameService {
+    Logger logger = LoggerFactory.getLogger(NameService.class);
+    /**
+     * 本地缓存，缓存了名字信息
+     */
+    private CopyOnWriteArrayList<String> names = new CopyOnWriteArrayList<>();
+
+    @PostConstruct
+    public void init(){
+        names.add("Tom");
+        names.add("Jerry");
+        names.add("Andy");
+        logger.debug("初始化 {}", names);
+    }
+
+    /**
+     * Spring不会调用“Prototype”组件的销毁方法
+     */
+    @PreDestroy 
+    public void destroy(){
+        logger.debug("销毁 {}", names);
+        names.clear();
+    }
+}
+
+```
 
 ## Bean的创建步骤
 
@@ -52,7 +220,9 @@ Bean的创建有3大步
     3. 处理Bean定义时候调用了一系列实现 BeanFactoryPostProcessor 接口的对象。
     4. 可以自行扩展 BeanFactoryPostProcesser 接口，参与Bean后期处理功能。
     5. 其中包括处理 @PropertySource、@Value 的 PropertySourcesPlaceholderConfigurer
-    6. 其中包括处理[`@Configuration`](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/annotation/Configuration.html) 的 ConfigurationClassPostProcessor
+       - 参考：https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/support/PropertySourcesPlaceholderConfigurer.html
+    6. 其中包括处理 @Configuration 的 ConfigurationClassPostProcessor 
+       - 参考：https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/annotation/ConfigurationClassPostProcessor.html
 2. 实例化Bean对象，这一步才开始创建Bean对象
     1. 首先查找Bean的依赖关系，解决创建Bean的先后次序问题
     2. 实例化Bean对象，也就行创建Bean对象，这里包含构造器注入过程。
@@ -64,8 +234,88 @@ Bean的创建有3大步
     4. 再执行BPP的后置处理方法
     5. 这个步骤可以干预扩展，可以自行实现BeanPostProcessor
     6. AOP代理就在在这一步添加的DefaultAdvisorAutoProxyCreator AspectJAwareAdvisorAutoProxyCreator
-    7. Aspect j 的注解在AnnotationAwareAspectJAutoProxyCreator 处理 是一个BPP实现类！
+    7. AspectJ 的注解在AnnotationAwareAspectJAutoProxyCreator 处理 是一个BPP实现类！
+        - 参考： https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/aop/framework/autoproxy/AbstractAdvisorAutoProxyCreator.html
 
+BeanFactoryPostProcesser 案例：
+```java
+/**
+ * BeanFactoryPostProcessor Bean工厂后期处理器，
+ * 其中使用一个方法 postProcessBeanFactory Bean工厂后置处理
+ * 在加载了Bean定义信息以后，对Bean定义进行后续转换处理。
+ * 原则上不建议自行处理
+ * configurableListableBeanFactory 对象中封装了全部的 Bean定义信息
+ */
+@Component
+public class MyBeanFactoryPostProcessor implements BeanFactoryPostProcessor  {
+    Logger logger = LoggerFactory.getLogger(MyBeanFactoryPostProcessor.class);
+
+    /**
+     * postProcessBeanFactory 在Spring加载全部Bean定义以后执行
+     * @param configurableListableBeanFactory 这个对象封装了全部Bean定义信息
+     * @throws BeansException bean定义加载失败抛出异常，如果抛出异常， 则Spring初始化失败！
+     */
+    @Override
+    public void postProcessBeanFactory(
+            ConfigurableListableBeanFactory configurableListableBeanFactory)
+            throws BeansException {
+        //获取全部的Bean定义， getBeanDefinitionNames获取Bean定义的名称
+        String[] beanNames = configurableListableBeanFactory.getBeanDefinitionNames();
+        for (String name : beanNames) {
+            logger.debug("bean name: {}", name);
+        }
+    }
+}
+```
+
+BeanPostProcessor 案例：
+```java
+/**
+ * Post 后期
+ * Process 处理
+ * Processor 处理器
+ * Before 之前
+ * After 之后
+ * Initialization：初始化， 这里是指Bean的初始化过程
+ * BeanPostProcessor Bean后期处理器， 在创建了Bean对象之后对象Bean进行处理
+ * 其中包括两个方法
+ *  postProcessBeforeInitialization：bean后期处理，在初始化之前执行
+ *  postProcessAfterInitialization：bean后期处理，在初始化之后执行
+ */
+@Component
+public class MyBeanPostProcessor implements BeanPostProcessor {
+    Logger logger = LoggerFactory.getLogger(MyBeanPostProcessor.class);
+    @Override
+    public Object postProcessBeforeInitialization(Object bean, String beanName)
+            throws BeansException {
+        logger.debug("在Bean初始化之前执行 {} {}", bean, beanName);
+        //bean 是创建完成的Bean对象
+        return bean; // 务必 返回创建的 Bean对象
+    }
+
+    @Override
+    public Object postProcessAfterInitialization(Object bean, String beanName)
+            throws BeansException {
+        logger.debug("在Bean初始化之后执行 {} {}", bean, beanName);
+        //bean 是创建完成的Bean对象
+        return bean; // 务必 返回创建的 Bean对象
+    }
+}
+```
+
+添加AOP切面后会自动创建代理：
+```java
+@Component
+@Aspect
+public class DemoAspect {
+    Logger logger = LoggerFactory.getLogger(DemoAspect.class);
+
+    @Before("bean(categoryService)")
+    public void test(){
+        logger.debug("在方法之前执行");
+    }
+}
+```
 
 
 ### @Bean 和 @Component
@@ -76,43 +326,35 @@ Bean的创建有3大步
 
 ## 独立使用Spring的问题
 
-- 搭建一个Spring框架项目，创建maven项目，然后在项目中倒入spring框架用到的依赖 spring-core-xx spring-context-xx spring-aop-xx
-     .........,
-
+- 搭建一个Spring框架项目，创建maven项目，然后在项目中倒入spring框架用到的依赖 
+  - spring-core-xx
+  - spring-context-xx
+  - spring-aop-xx 
+  -  ........
 - 在Spring框架中导入依赖时是需要指定版本号的，此时就可能会产生版本不兼容问题。 eg:导入SpringMVC的依赖，导入mybatis的依赖，
-
 - 框架之间的整合问题:SSM SpringMVC Spring Mybatis，必须导入整合的依赖
 
 ## 什么是Spring Boot
 
-Spring Boot帮助你创建可以运行的独立的、基于Spring的生产级应用程序。
+Spring Boot 好处：
 
-对Spring平台和第三方库采用Starter依赖，这样你就能以最少的代码开始工作。
+- Spring Boot帮助你创建可以运行的独立的、基于Spring的生产级应用程序。
+- 对Spring平台和第三方库采用Starter依赖，这样你就能以最少的代码开始工作。
+- 大多数Spring Boot应用程序只需要很少的Spring配置。
+- 你可以使用Spring Boot来创建Java应用程序，这些应用程序可以通过使用java -jar或更传统的war部署来启动。
+- 我们还提供一个运行 "spring scripts "的命令行工具。
 
-大多数Spring Boot应用程序只需要很少的Spring配置。
-
-你可以使用Spring Boot来创建Java应用程序，这些应用程序可以通过使用java -jar或更传统的war部署来启动。
-
-我们还提供一个运行 "spring scripts "的命令行工具。
-
-我们的主要目标是。
-
-为所有的Spring开发提供一个从根本上更快、更广泛的入门体验。
-
-**开箱即用**，但当需求开始偏离默认值时，迅速配置。
-
-提供一系列大类项目常见的非功能特性（如嵌入式服务器、安全、度量、健康检查和外部化配置）。
+Spring Boot的主要目标是。
+- 为所有的Spring开发提供一个从根本上更快、更广泛的入门体验。
+- **开箱即用**，但当需求开始偏离默认值时，迅速配置。
+- 提供一系列大类项目常见的非功能特性（如嵌入式服务器、安全、度量、健康检查和外部化配置）。
 
 ## Spring Boot功能
 
 Spring Boot 提供了四大功能。（还记得Spring提供的两大功能么？）
-
-- **依赖管理**
-
+- 依赖管理
 - 自动配置
-
 - 打包
-
 - 热部署
 
 面试题：Spring 和SpringBoot的区别：
