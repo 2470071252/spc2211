@@ -7,9 +7,11 @@
     <packaging>pom</packaging>
     <version>0.0.1-SNAPSHOT</version>
     <modules>
+        <!-- Unit01 -->
         <module>spring-ioc</module>
-
         <module>spring-demo</module>
+        <!-- Unit02 -->
+        <module>spring-life-cycle</module>
 
     </modules>
     <name>spc2209</name>
