@@ -320,6 +320,8 @@ public class DemoAspect {
 
 ### @Bean 和 @Component
 
+@Bean 和 @Component 注解处理方式都是一样的：
+
 ![image-20220924235843843](assets/image-20220924235843843.png)
 
 # Spring Boot
@@ -366,28 +368,33 @@ Spring Boot 提供了四大功能。（还记得Spring提供的两大功能么�
 
 搭建Spring环境，存在的问题:1. 导入的依赖项非常多 2. 版本不兼容问题
 
-- **Spring** **Boot** 父级POM，内部使用 **dependencyManagement** 管理了常用组件， 解决版本兼容问题
-
+- **Spring Boot** 父级POM，内部使用 **dependencyManagement** 管理了常用组件， 解决版本兼容问题
     - start.spring.io 脚手架使用的是 parent 方式
     - start.aliyun.com 脚手架使用的是 dependencyManagement 方式
 
 - 各种 starter 解决依赖包导入问题
-
-    - spring-boot-starter 解决16个jar 
-
+    - spring-boot-starter 解决16个jar
     - spring-boot-starter-test 解决测试相关的jar包
-
     - 举几个例子:
-
-        –**spring-boot-starter-jdbc**
-
-        –**spring-boot-starter-data-jpa**
-
-        –**spring-boot-starter-web**
-
-        –**spring-boot-starter-batch**
+        – spring-boot-starter-jdbc
+        – spring-boot-starter-data-jpa
+        – spring-boot-starter-web
+        – spring-boot-starter-batch
 
 Spring Boot 依赖管理：1 Spring Boot 父级项目提供了依赖管理，2 Spring Boot项目通过XXX-starter自动依赖各种包。
+
+```xml
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-jdbc</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+</dependencies>
+```
 
 ### 自动配置
 
@@ -406,13 +413,34 @@ SpringBoot 提供了自动配置功能
     - @SpringBootConfiguration（继承于@Configuration）
 - 在SpringBoot启动类中标注@SpringApplication 就开启了自动配置功能
 
+@SpringBootApplication 的元注解包括 @EnableAutoConfiguration
+```java
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Inherited
+@SpringBootConfiguration
+@EnableAutoConfiguration
+@ComponentScan(
+    excludeFilters = {@Filter(
+    type = FilterType.CUSTOM,
+    classes = {TypeExcludeFilter.class}
+), @Filter(
+    type = FilterType.CUSTOM,
+    classes = {AutoConfigurationExcludeFilter.class}
+)}
+)
+public @interface SpringBootApplication {
+}
+```
+
 @EnableAutoConfiguration是如何工作的：
 
 - @EnableAutoConfiguration会读取工厂配置
     - 从jar文件中读取spring-boot-autoconfigure/META-INF/spring.factories
     - 找到 标注@Configuration 的**自动配置类**
     - 按照自动配置类中的注解完成自动配置
-
+    
 **自动配置类**实例
 
 ![image-20220925132258653](assets/image-20220925132258653.png)
@@ -439,11 +467,9 @@ public class DataSourceAutoConfiguration {
 ```
 
 Conditional： 条件
-
 Missing: 缺少
 
-**@Conditional**注解， 是系列注解 @ConditionalXXX 
-
+**@Conditional**注解， 是系列注解 @ConditionalXXX
 - 允许条件性的创建Bean
   - 仅当其它Bean存在（或不存在）时创建 Bean 对象
 
@@ -483,6 +509,99 @@ public class Axe implements Tool {
 
 ![image-20220925134006078](assets/image-20220925134006078.png)
 
+案例, Spring Boot项目添加Derby和Spring Jdbc依赖就会自动配置数据源和JdbcTemplate：
+```xml
+<dependencies>
+    <dependency>
+        <groupId>org.apache.derby</groupId>
+        <artifactId>derby</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-jdbc</artifactId>
+    </dependency>
+</dependencies>
+```
+
+测试：
+```java
+@SpringBootTest
+public class DataSourceTests {
+    Logger logger = LoggerFactory.getLogger(DataSourceTests.class);
+
+    @Test
+    void test(){
+        logger.debug("测试");
+    }
+
+    @Autowired
+    JdbcTemplate jdbcTemplate;
+
+    @Test
+    void testJdbcTemplate(){
+        logger.debug("{}", jdbcTemplate);
+    }
+
+    @Autowired
+    DataSource dataSource;
+    @Test
+    void driver() throws SQLException {
+        logger.debug("{}", dataSource.getConnection()
+                        .getMetaData().getDriverName());
+    }
+
+    @Test
+    void testDataSource(){
+        logger.debug("{}", dataSource.getClass().getName());
+    }
+}
+```
+
+添加MySQL驱动和配置后，就自动更换了数据源连接池：
+```xml
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <scope>runtime</scope>
+</dependency>
+```
+```properties
+# 配置MySQL驱动， 就会自动替换Derby数据库配置
+spring.datasource.url=jdbc:mysql://localhost:3306/mysql?characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true
+spring.datasource.username=root
+spring.datasource.password=root
+```
+
+手动配置了数据源，就会自动替换默认数据源：
+```xml
+<dependency>
+    <groupId>com.alibaba</groupId>
+    <artifactId>druid</artifactId>
+    <version>1.2.12</version>
+</dependency>
+```
+```java
+@Configuration
+public class DataSourceConfig {
+    //获取 application.properties 中的配置信息
+    @Value("${spring.datasource.url}")
+    String url;
+    @Value("${spring.datasource.username}")
+    String username;
+    @Value("${spring.datasource.password}")
+    String password;
+
+    @Bean
+    public DataSource dataSource(){
+        DruidDataSource dataSource = new DruidDataSource();
+        dataSource.setUrl(url);
+        dataSource.setUsername(username);
+        dataSource.setPassword(password);
+        return dataSource;
+    }
+}
+```
+
 SpringBoot中自定义Bean配置和自动配置的顺序：
 
 - 在定义的Bean显式的创建之后处理自动配置类，你定义的Bean总是优先于自动配置
@@ -495,28 +614,21 @@ SpringBoot中自定义Bean配置和自动配置的顺序：
 - Spring Boot的设计是为了让覆盖更简单
 
 - 有几种选项
-
   1. 设置一些Spring Boot的属性（application.properties）
-
   2. 自己显式的定义Bean，则Spring Boot不会再创建自己的Bean对象
-
   3. 显式禁用一些自动配置
-
   4. 更换依赖项
 
 1 **设置SpringBoot**的一些属性
-
-- 例如： 外置数据源配置属性，可以覆盖SpringBoot默认数据源配置，比如自动更换为MySQL数据库
+  - 例如： 外置数据源配置属性，可以覆盖SpringBoot默认数据源配置，比如自动更换为MySQL数据库
 
 2 自己显式的定义Bean， 创建自己的数据源对象，Spring Boot 就不会自己创建数据源对象了
 
 3 显式禁用一些自动配置
 
 - @EnableAutoConfiguration(exclude=DataSourceAutoConfiguration.**class**)
-
 - spring.autoconfigure.exclude=\
-
-     org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+   org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 
 4 **显式替代依赖项**
 
@@ -546,15 +658,11 @@ Fat jar： 胖jar
 Spring Boot 提供了Fat jar 打包方式:
 
 - 将全部的依赖项和配置、Java类等都打包到一个jar文件，包含内嵌Web服务器。
-
 - 只需要一个命令就能部署启动： 关闭时候使用 Ctrl+C
-
   ```sh
   java -jar xxxx.jar
   ```
-
 - 文件扩展名， 可以是jar或者war都可以
-
 - 同时也提供传统部署jar（瘦jar）没有包含依赖项，可以部署到Tomcat中
 
 ```sh

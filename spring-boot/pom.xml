@@ -3,19 +3,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.tedu</groupId>
-    <artifactId>spc2211</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>spring-boot</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <modules>
-        <!-- Unit01 -->
-        <module>spring-ioc</module>
-        <module>spring-demo</module>
-        <!-- Unit02 -->
-        <module>spring-life-cycle</module>
-        <module>spring-boot</module>
-
-    </modules>
-    <name>spc2209</name>
+    <name>spring-boot</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
@@ -28,10 +18,28 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
-
-
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.2.12</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <!-- Derby 内嵌数据库 -->
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <scope>runtime</scope>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -74,7 +82,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>2.3.7.RELEASE</version>
                 <configuration>
-                    <mainClass>cn.tedu.spc2209.Spc2209Application</mainClass>
+                    <mainClass>cn.tedu.spring.Application</mainClass>
                 </configuration>
                 <executions>
                     <execution>
