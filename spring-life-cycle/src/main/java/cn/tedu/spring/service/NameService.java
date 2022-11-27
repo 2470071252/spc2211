@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Component
@@ -24,6 +25,10 @@ public class NameService {
         names.add("Jerry");
         names.add("Andy");
         logger.debug("初始化 {}", names);
+    }
+
+    public List<String> getNames() {
+        return names;
     }
 
     /**

@@ -16,17 +16,19 @@
 
 Spring 为了方便用户扩展功能，提供了在Bean生命周期管理过程中自动调用的声明周期管理方法功能：
 
-- @PostConstruct 在对象实例化后，Bean初始化过程中调用用户自定义的方法
+- @PostConstruct: 在对象实例化后，Bean初始化过程中调用用户自定义的方法
     - 标注在方法上，要求该方法无参且返回值为void
-    - 可以用于初始化，如初始化缓存，初始化数据库连接
+    - 可以用于初始化: 如初始化缓存，初始化数据库连接
 - @PreDestroy 在销毁Bean时候，执行用户自定义的方法
     - 标注在方法上，要求该方法无参且返回值为void
     - 清空缓存，释放资源
     - 关闭容器时候会自动调用
-    - Spring会在JVM上挂“钩子”，关闭JVM时候，钩子会自动调用Spring容器的关闭方法
+    - Spring会在JVM上挂“钩子”，关闭JVM时候，钩子会自动调用Spring容器的关闭方法, Spring容器关闭时候，会自动实现 @PreDestroy 标注的方法。
     - 这个方法不是绝对可靠，直接关闭进程时候不会执行
     - 只有单例对象，销毁时候才会执行销毁方法
     
+
+@PreDestroy 的执行原理：Spring 在虚拟机上挂了关闭钩子， 虚拟机关闭时候会自动执行钩子， Spring的钩子会关闭Spring容器， 关闭容器时候会自动执行@PreDestroy 标注的方法。
 
 案例：
 ```java
@@ -82,6 +84,75 @@ public class TagServiceTests {
     }
 }
 ```
+
+关闭钩子案例：
+
+```java
+package cn.tedu.spring.hook;
+
+public class ShutdownHookDemo {
+    public static void main(String[] args) throws Exception{
+        /*
+         * runtime 运行时
+         * total 总数
+         * Memory 记忆，内存，记忆体
+         * shutdown 关机
+         * Hook 钩子
+         * runtime 代表正在运行的虚拟机
+         * 可以通过runtime获取当前虚拟机的参数
+         */
+        Runtime runtime = Runtime.getRuntime();
+        //获取当前JVM总内存数量
+        long bytes = runtime.totalMemory();
+        System.out.println("totalMemory:" + bytes);
+        //给系统挂关闭钩子
+        runtime.addShutdownHook(new DemoHook());
+        System.out.println("挂完了");
+        Thread.sleep(2000);
+    }
+}
+
+class DemoHook extends Thread{
+    @Override
+    public void run() {
+        System.out.println("执行钩子了！");
+    }
+}
+```
+
+在Spring中挂钩子：
+
+```java
+package cn.tedu.spring.hook;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+
+/**
+ * 在当前虚拟机上挂关闭钩子
+ */
+@Component
+public class HockBean extends Thread {
+
+    Logger logger = LoggerFactory.getLogger(HockBean.class);
+
+    @PostConstruct
+    void addHock(){
+        Runtime.getRuntime().addShutdownHook(this);
+        logger.debug("在当前虚拟机上挂关闭钩子");
+    }
+
+    @Override
+    public void run() {
+        logger.debug("系统关闭！");
+    }
+}
+```
+
+
 
 
 
