@@ -12,7 +12,7 @@
 
 ![image-20220924150307514](assets/image-20220924150307514.png)
 
-## 自定义的初始化和销毁功能
+## 自定义的初始化和销毁方法
 
 Spring 为了方便用户扩展功能，提供了在Bean生命周期管理过程中自动调用的声明周期管理方法功能：
 
@@ -27,6 +27,7 @@ Spring 为了方便用户扩展功能，提供了在Bean生命周期管理过程
     - 这个方法不是绝对可靠，直接关闭进程时候不会执行
     - 只有单例对象，销毁时候才会执行销毁方法
     
+
 案例：
 ```java
 /**
@@ -63,7 +64,31 @@ public class TagService {
 }
 ```
 
+测试案例：
+
+```java
+@SpringBootTest
+public class TagServiceTests {
+
+    Logger logger = LoggerFactory.getLogger(TagServiceTests.class);
+
+    @Autowired
+    TagService tagService;
+
+    @Test
+    void tests(){
+        List<String> tags = tagService.getTags();
+        tags.forEach(tag->logger.debug("{}", tag));
+    }
+}
+```
+
+
+
+
+
 @Bean Bean的生命周期管理方法
+
 - @Bean 注解使用属性设置销毁方法
     - @Bean(initMethod="populateCache", destroyMethod="flushCache")
 - 可以根据实际业务需要执行这两个方法
@@ -442,6 +467,7 @@ public @interface SpringBootApplication {
     - 找到 标注@Configuration 的**自动配置类**
     - 按照自动配置类中的注解完成自动配置
     
+
 **自动配置类**实例
 
 ![image-20220925132258653](assets/image-20220925132258653.png)
