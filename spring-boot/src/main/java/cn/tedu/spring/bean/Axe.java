@@ -11,8 +11,7 @@ import org.springframework.stereotype.Component;
  * 如果有工人类型Bean就可以创建 斧子Bean
  * 如果缺少Tool类型的Bean就创建(忽略掉当前的斧子) 斧子Bean
  */
-@ConditionalOnMissingBean(value = Tool.class, ignored = Axe.class)
-@ConditionalOnBean(Worker.class)
+@ConditionalOnMissingBean(name = "saw")
 public class Axe implements Tool {
     Logger logger = LoggerFactory.getLogger(Axe.class);
 

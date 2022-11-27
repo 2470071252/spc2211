@@ -2,13 +2,14 @@ package cn.tedu.spring.bean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.stereotype.Component;
 
-//@Component
-
+@Component
 /**
  * 如果存在 Worker 类型的对象时候，就创建电锯对象
  */
-//@ConditionalOnBean(Worker.class)
+@ConditionalOnBean(Worker.class)
 public class Saw implements Tool {
     Logger logger = LoggerFactory.getLogger(Saw.class);
 
