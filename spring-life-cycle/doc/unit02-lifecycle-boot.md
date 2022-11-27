@@ -847,11 +847,14 @@ SpringBoot中自定义Bean配置和自动配置的顺序：
 
 - 有几种选项
   1. 设置一些Spring Boot的属性（application.properties）
+     1. 例如：添加MySQL属性参数，则不会自动配置内嵌数据库
   2. 自己显式的定义Bean，则Spring Boot不会再创建自己的Bean对象
+     1. 例如：添加Druid数据源， 则Spring不再提供数据源
   3. 显式禁用一些自动配置
   4. 更换依赖项
 
 1 **设置SpringBoot**的一些属性
+
   - 例如： 外置数据源配置属性，可以覆盖SpringBoot默认数据源配置，比如自动更换为MySQL数据库
 
 2 自己显式的定义Bean， 创建自己的数据源对象，Spring Boot 就不会自己创建数据源对象了
