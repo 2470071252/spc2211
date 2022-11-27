@@ -31,8 +31,7 @@ public class DataSourceTests {
     DataSource dataSource;
     @Test
     void driver() throws SQLException {
-        logger.debug("{}",
-                dataSource.getConnection()
+        logger.debug("{}", dataSource.getConnection()
                         .getMetaData().getDriverName());
     }
 

@@ -482,8 +482,6 @@ public class AopProxyTests {
 
 
 
-
-
 ### @Bean 和 @Component
 
 @Bean 和 @Component 注解处理方式都是一样的：
@@ -509,7 +507,7 @@ Spring Boot 好处：
 
 - Spring Boot帮助你创建可以运行的独立的、基于Spring的生产级应用程序。
 - 对Spring平台和第三方库采用Starter依赖，这样你就能以最少的代码开始工作。
-- 大多数Spring Boot应用程序只需要很少的Spring配置。
+- 大多数Spring Boot应用程序只需要很少的Spring配置, 开箱即用。
 - 你可以使用Spring Boot来创建Java应用程序，这些应用程序可以通过使用java -jar或更传统的war部署来启动。
 - 我们还提供一个运行 "spring scripts "的命令行工具。
 
@@ -578,7 +576,7 @@ SpringBoot 提供了自动配置功能
     - @EnableAutoConfiguration
     - @ComponentScan
     - @SpringBootConfiguration（继承于@Configuration）
-- 在SpringBoot启动类中标注@SpringApplication 就开启了自动配置功能
+- 在SpringBoot启动类中标注@SpringBootApplication就开启了自动配置功能
 
 @SpringBootApplication 的元注解包括 @EnableAutoConfiguration
 ```java
@@ -649,8 +647,16 @@ Missing: 缺少
 
 ```java
 @Component
+/**
+ * 如果存在 Worker 类型的对象时候，就创建电锯对象
+ */
 @ConditionalOnBean(Worker.class)
 public class Saw implements Tool {
+    Logger logger = LoggerFactory.getLogger(Saw.class);
+
+    public Saw(){
+        logger.debug("创建电锯");
+    }
     @Override
     public String toString() {
         return "寒冰锯";
@@ -662,14 +668,72 @@ public class Saw implements Tool {
 
 ```java
 @Component
-@ConditionalOnMissingBean(value = Tool.class, ignored = Axe.class)
+/**
+ * 如果有工人类型Bean就可以创建 斧子Bean
+ * 如果缺少Tool类型的Bean就创建(忽略掉当前的斧子) 斧子Bean
+ */
+@ConditionalOnMissingBean(name = "saw")
+@ConditionalOnBean(Worker.class)
 public class Axe implements Tool {
+    Logger logger = LoggerFactory.getLogger(Axe.class);
+
+    public Axe(){
+        logger.debug("创建斧子");
+    }
+
     @Override
     public String toString() {
         return "开天斧";
     }
 }
 ```
+
+例子： 工人：
+
+```java
+@Component
+public class Worker {
+    Logger logger = LoggerFactory.getLogger(Worker.class);
+    private String name = "光头强";
+
+    @Autowired
+    private Tool tool;
+
+    public Worker() {
+        logger.debug("创建工人");
+    }
+
+    public void work(){
+        logger.debug("{}使用{}砍树", name, tool);
+    }
+}
+```
+
+测试类：
+
+```java
+@SpringBootTest
+public class WorkerTests {
+    Logger logger = LoggerFactory.getLogger(WorkerTests.class);
+
+    @Autowired
+    Worker worker;
+
+    @Test
+    void tests(){
+        logger.debug("{}", worker);
+    }
+
+    @Test
+    void work(){
+        worker.work();
+    }
+}
+```
+
+
+
+
 
 自动配置数据库链接的例子：
 
