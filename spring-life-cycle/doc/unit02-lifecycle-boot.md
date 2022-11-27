@@ -632,6 +632,12 @@ public class DataSourceAutoConfiguration {
    }
 ```
 
+自动配置原理：
+
+![image-20221127181734431](assets/image-20221127181734431.png)
+
+
+
 Conditional： 条件
 Missing: 缺少
 
