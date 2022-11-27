@@ -391,11 +391,11 @@ BeanPostProcessor 案例：
 /**
  * Post 后期
  * Process 处理
- * Processor 处理器
+ * Processor 处理器  
  * Before 之前
  * After 之后
  * Initialization：初始化， 这里是指Bean的初始化过程
- * BeanPostProcessor Bean后期处理器， 在创建了Bean对象之后对象Bean进行处理
+ * BeanPostProcessor Bean后期处理器(BPP)， 在创建了Bean对象之后对象Bean进行处理
  * 其中包括两个方法
  *  postProcessBeforeInitialization：bean后期处理，在初始化之前执行
  *  postProcessAfterInitialization：bean后期处理，在初始化之后执行
@@ -406,17 +406,20 @@ public class MyBeanPostProcessor implements BeanPostProcessor {
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName)
             throws BeansException {
-        logger.debug("在Bean初始化之前执行 {} {}", bean, beanName);
-        //bean 是创建完成的Bean对象
-        return bean; // 务必 返回创建的 Bean对象
+        //创建了每个一个bean以后，执行初始化方法之前，执行
+        //bean 就是刚刚创建的Bean对象， beanName就是这个Bean ID
+        logger.debug("初始化前置处理 {} {} ", beanName, bean);
+        //方法务必返回 bean 对象，否则会干扰 执行Bean初始化方法
+        return bean;
     }
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName)
             throws BeansException {
-        logger.debug("在Bean初始化之后执行 {} {}", bean, beanName);
-        //bean 是创建完成的Bean对象
-        return bean; // 务必 返回创建的 Bean对象
+        //在每个Bean初始化以后执行后置处理方法
+        logger.debug("初始化后置处理 {} {} ", beanName, bean);
+        //方法务必返回 bean 对象，否则会干扰Bean的使用
+        return bean;
     }
 }
 ```
