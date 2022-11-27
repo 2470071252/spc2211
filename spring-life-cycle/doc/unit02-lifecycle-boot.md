@@ -154,8 +154,8 @@ public class HockBean extends Thread {
 
 @Bean Bean的生命周期管理方法
 
-- @Bean 注解使用属性设置销毁方法
-    - @Bean(initMethod="populateCache", destroyMethod="flushCache")
+- @Bean 注解使用属性设置销毁(destroy)方法
+    - @Bean(initMethod="init", destroyMethod="destroy")
 - 可以根据实际业务需要执行这两个方法
 
 案例：Bean 组件
@@ -201,6 +201,37 @@ public class ServiceConfig {
     @Bean(initMethod = "init", destroyMethod = "destroy")
     public CategoryService categoryService() {
         return new CategoryService();
+    }
+}
+```
+
+测试类：
+
+```java
+package cn.tedu.spring;
+
+import cn.tedu.spring.entity.Category;
+import cn.tedu.spring.service.CategoryService;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
+
+@SpringBootTest
+public class CategoryServiceTests {
+
+    Logger logger = LoggerFactory.getLogger(CategoryServiceTests.class);
+
+    @Autowired
+    CategoryService categoryService;
+
+    @Test
+    void test(){
+        List<Category> list = categoryService.getCategoryList();
+        list.forEach(category->logger.debug("{}", category));
     }
 }
 ```
