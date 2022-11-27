@@ -31,6 +31,9 @@ public class DataSourceTests {
     DataSource dataSource;
     @Test
     void driver() throws SQLException {
+        /*
+         * 1. 在pom添加 Derby 和 Spring JDBC 依赖后，自动创建dataSource 和 jdbcTemplate
+         */
         logger.debug("{}", dataSource.getConnection()
                         .getMetaData().getDriverName());
     }
