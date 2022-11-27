@@ -152,12 +152,6 @@ public class HockBean extends Thread {
 }
 ```
 
-
-
-
-
-
-
 @Bean Bean的生命周期管理方法
 
 - @Bean 注解使用属性设置销毁方法
@@ -211,56 +205,6 @@ public class ServiceConfig {
 }
 ```
 
-Java 虚拟机提供了“系统钩子”，正常关闭系统时候可以自动执行钩子线程：
-```java
-public class SystemHookDemo {
-    public static void main(String[] args) {
-        /*
-         * Runtime 运行时， 代表正在运行的Java虚拟机！
-         * runtime 可以获取当前虚拟机全部的信息
-         * runtime 允许挂“钩子”，钩子是一个线程，
-         * 在JVM关闭时候， 会自动执行这个线程
-         */
-        Runtime runtime = Runtime.getRuntime();
-        long bytes = runtime.totalMemory();
-        System.out.println("当前内存数："+bytes);
-        //为虚拟机挂上关闭时候的钩子
-        runtime.addShutdownHook(new DemoHook());
-        System.out.println("关闭系统");
-    }
-}
-
-class DemoHook extends Thread{
-    @Override
-    public void run() {
-        System.out.println("JVM正在关闭");
-    }
-}
-```
-
-Spring 会在Java虚拟机上挂上钩子，感知虚拟机的关闭，原理如下：
-```java
-/**
- * 在Spring 中为系统挂上一个自己的系统关闭钩子
- */
-@Component
-public class HookBean extends Thread {
-
-    static final Logger logger = LoggerFactory.getLogger(HookBean.class);
-
-    @PostConstruct
-    public void init() {
-        logger.debug("为JVM挂钩子");
-        Runtime.getRuntime().addShutdownHook(this);
-    }
-
-    @Override
-    public void run() {
-        logger.debug("系统正在关闭");
-    }
-}
-```
-
 
 
 
@@ -275,6 +219,18 @@ public class HookBean extends Thread {
 
 案例：
 ```java
+package cn.tedu.spring.service;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 @Component
 @Scope("prototype")
 public class NameService {
@@ -292,17 +248,52 @@ public class NameService {
         logger.debug("初始化 {}", names);
     }
 
+    public List<String> getNames() {
+        return names;
+    }
+
     /**
      * Spring不会调用“Prototype”组件的销毁方法
      */
-    @PreDestroy 
+    @PreDestroy
     public void destroy(){
         logger.debug("销毁 {}", names);
         names.clear();
     }
 }
-
 ```
+
+测试：
+
+```java
+package cn.tedu.spring;
+
+import cn.tedu.spring.service.NameService;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
+
+@SpringBootTest
+public class NameServiceTests {
+
+    Logger logger = LoggerFactory.getLogger(NameServiceTests.class);
+
+    @Autowired
+    NameService nameService;
+
+    @Test
+    void tests(){
+        List<String> names = nameService.getNames();
+        names.forEach(name->logger.debug("{}", name));
+    }
+}
+```
+
+
 
 ## Bean的创建步骤
 
