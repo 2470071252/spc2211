@@ -13,6 +13,8 @@
         <!-- Unit02 -->
         <module>spring-life-cycle</module>
         <module>spring-boot</module>
+        <!-- Unit03 -->
+        <module>spring-test</module>
 
     </modules>
     <name>spc2209</name>
