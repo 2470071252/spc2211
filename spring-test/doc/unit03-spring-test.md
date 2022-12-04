@@ -1,8 +1,14 @@
-# Spring 和 Spring Boot测试
+# Unit03 Spring 测试和 Spring Boot测试
 
-## JUnit5 可以单独使用
+## 单独使用JUnit5 
 
 ![img.png](images/img.png)
+
+Spring 和 Spring Boot 提供的测试功能，是整合JUnit5实现的。
+
+Spring Boot内嵌了JUnit5 ，导入Spring Boot依赖，就会自动导入JUnit5.
+
+JUnit5 官方:  https://junit.org/
 
 JUnit5 是最常用的Java测试框架，可以单独使用：
 
@@ -20,6 +26,7 @@ public class Junit5Tests {
 
     /**
      * 在每一个测试案例之前执行，用于初始化每个案例的上下文
+     * Before 在xxx之前，Each 每一个
      */
     @BeforeEach
     void beforeEach(){
@@ -28,6 +35,7 @@ public class Junit5Tests {
 
     /**
      * 在全部测试案例执行完成以后执行，销毁全局资源，静态方法
+     * After 在xxx之后，all全部
      */
     @AfterAll
     static void afterAll(){
@@ -65,10 +73,19 @@ public class Junit5Tests {
 
 Mock 模拟，欺骗
 
+Mockito 是Java单元测试模拟框架， 可以用于创建各种模拟对象， 模拟对象的行为
+
+官网：https://site.mockito.org/
+
+使用步骤：
+
+- 基于接口创建模拟对象， 用于替换实际实现的对象, 底层是JDK 动态代理实现
+  - 如果实现数据层接口，替换数据层对象。
+- 通过训练，模拟接口的行为。 
+
 利用模拟框架，创建模拟userDao对象：
 
 ```java
-
 public class MockTests {
     Logger logger = LoggerFactory.getLogger(MockTests.class);
     UserDao userDao;
@@ -103,43 +120,57 @@ public class MockTests {
 
 利用模拟的对象进行单元测试：
 ```java
+package cn.tedu.spring.junit;
+
+import cn.tedu.spring.dao.UserDao;
+import cn.tedu.spring.entity.User;
+import cn.tedu.spring.service.UserService;
+import cn.tedu.spring.service.impl.UserServiceImpl;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static org.mockito.Mockito.*;
+
+/**
+ * 脱离数据库，对业务层进程测试
+ */
 public class UnitTests {
-    private UserDao userDao;
-
-    @BeforeEach
-    void init() {
-        /*
-         * 利用 Mockito 创建模拟UserDao类型对象
-         */
-        userDao = Mockito.mock(UserDao.class);
-        /*
-         * 利用 Mockito 提供的API，训练userDao对象：
-         * 在执行 userDao.findUserByName("Tom") 方法时候，
-         * 返回 new User(1, "Tom", "1234", "ADMIN")
-         */
-        Mockito.when(userDao.findUserByName("Tom"))
-                .thenReturn(new User(1, "Tom", "1234", "ADMIN"));
-    }
-
-    /*
-     * 利用 Mock 对象进程单元测试
+    Logger logger = LoggerFactory.getLogger(UnitTests.class);
+    UserService userService;
+    UserDao userDao;
+    /**
+     * 在执行测试方法之前，对userService进程初始化
      */
-    @Test
-    void login1() {
-        //创建业务层对象
+    @BeforeEach
+    void init(){
+        logger.debug("创建userDao模拟对象，并且训练行为");
+        //创建userDao模拟对象，并且训练行为
+        userDao = mock(UserDao.class);
+        when(userDao.findUserByName("Tom"))
+                .thenReturn(new User(1, "Tom", "123", "ADMIN"));
+        //使userService依赖模拟的userDao对象，不依赖数据库
         UserServiceImpl userService = new UserServiceImpl();
-        //业务层对象注入模拟对象
         userService.setUserDao(userDao);
-        User user = userService.login("Tom", "1234");
-        System.out.println(user);
-        //userService.login("Tom", "123");
-        //userService.login("Jerry", "123");
+        this.userService = userService;
     }
-
+    @Test
+    void login(){
+        User user = userService.login("Tom", "123");
+        logger.debug("登录结果{}", user);
+    }
 }
+
 ```
 
 ## 使用断言进行自动化测试
+
+对测试结果进行人工逐一核对是及其繁琐的！！！
+
+断言: 在程序运行期期间，断定得到的数据/变量的值，必然是某个数值。如果是则通过检查，如果不是则抛出异常！
+
+利用断言核查大量运算结果，具有快速高效，自动化的优势。
 
 - 断言(assertion)是一种在程序中的一阶逻辑(如：一个结果为真或假的逻辑判断式)，
 - 目的为了表示与验证软件开发者预期的结果——当程序执行到断言的位置时，对应的断言应该为真。
@@ -221,13 +252,21 @@ void login() {
 
 @SpringBootTest 注解：
 - 标注在测试类上，自动搜索 @SpringBootConfiguration 注解，创建Spring上下文
+  - 也就是说@SpringBootTest会自动搜索Spring配置类
+
 - @SpringBootTest 是@ContextConfiguration的替代方案
+  - @ContextConfiguration需要指定配置类
+  - @SpringBootTest 也可以指定配置类
+
 - @SpringBootTest 用于**集成测试**，@ContextConfiguration 用于**分片测试**
 - @SpringBootTest注解属性webEnvironment 支持多种测试模式：
   - RANDOM_PORT, DEFINED_PORT, MOCK, NONE（- 随机端口，定义端口，模拟，无） 
+  - @SpringBootTest 可以进行Web应用测试， web应用服务器启动时候，一般占用8080，测试程序如果也使用8080端口，肯定出现端口绑定异常。 使用随机端口参数，就可以避免这个异常，使用随机测试。
 - 测试框架自动启动嵌入式Web服务器
 - 自动配置一个TestRestTemplate 组件 
 - 是组合注解，元注解包括@ExtendWith（从Spring Boot 2.2开始）
+
+简单理解： @SpringBootTest  = @ExtendWith + @ContextConfiguration
 
 创建测试类, 指定随机端口：
 ```java
