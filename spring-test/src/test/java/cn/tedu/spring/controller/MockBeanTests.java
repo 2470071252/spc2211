@@ -1,12 +1,15 @@
 package cn.tedu.spring.controller;
 
+import cn.tedu.spring.entity.User;
 import cn.tedu.spring.service.UserService;
-import com.mysql.cj.log.Log;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class MockBeanTests {
@@ -22,6 +25,17 @@ public class MockBeanTests {
     @Test
     void test(){
         logger.debug("MockBean {}", userService.getClass());
+        /*
+         * 对动态创建的模拟对象进行功能训练
+         */
+        Mockito.when(userService.getById(1))
+                .thenReturn(new User(1, "Tom", "123", "ADMIN"));
+        /*
+         * 测试训练结果
+         */
+        User user = userService.getById(1);
+        logger.debug("User {}", user);
+        assertEquals("Tom", user.getUsername());
+        assertEquals("123", user.getPassword());
     }
-
 }
