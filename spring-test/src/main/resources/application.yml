@@ -11,4 +11,4 @@ logging:
   level:
     cn:
       tedu:
-        springtest: debug
+        spring: debug
