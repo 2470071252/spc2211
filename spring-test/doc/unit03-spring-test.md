@@ -1,4 +1,4 @@
-# Spring 和 Sptring Boot测试
+# Spring 和 Spring Boot测试
 
 ## JUnit5 可以单独使用
 
@@ -212,7 +212,7 @@ void login() {
 - AssertJ：一个断言库
 - Hamcrest：一个匹配库
 - Mockito：一个Java模拟框架
-- JSONassert：一个用于JSON的断言库
+- JSONAssert：一个用于JSON的断言库
 - JsonPath：用于JSON的XPath
 
 ## 对 Spring MVC 测试
