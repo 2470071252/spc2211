@@ -31,7 +31,8 @@ public class WebMvcTestsDemo {
     Logger logger = LoggerFactory.getLogger(WebMvcTestsDemo.class);
 
     /**
-     * 利用@MockBean创建被UserController依赖的对象
+     * 利用@MockBean创建被UserController依赖的对象userService
+     * @WebMvcTest 会自动的将userService注入给UserController
      */
     @MockBean
     UserService userService;
@@ -54,15 +55,19 @@ public class WebMvcTestsDemo {
 
     @Test
     void login() throws Exception{
+        //URL 中{0}的参数占位符
         String url = "/users/login?username={0}&pwd={1}";
-        mockMvc.perform(get(url,"John", "1234"))
-                .andExpect(status().isOk());
+        mockMvc.perform(get(url,"John", "1234"))  //请求时候，进行参数替换
+                .andExpect(status().isOk())
+                .andExpect(content().string("登录成功！"));
+
         logger.debug("测试完成");
     }
     @Test
     void getUser() throws Exception{
+        //URL 中{0}的参数占位符
         String url = "/users/{0}";
-        mockMvc.perform(get(url, 2))
+        mockMvc.perform(get(url, 2)) //请求时候，进行参数替换
                 .andExpect(status().isOk())//检查返回的状态码
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON)) //检查contentType
                 .andExpect(jsonPath("username").value("Andy"))//检查返回结果中 json 属性的值
@@ -70,6 +75,5 @@ public class WebMvcTestsDemo {
                 .andExpect(jsonPath("roles").value("ADMIN"));
         logger.debug("测试完成");
     }
-
 
 }

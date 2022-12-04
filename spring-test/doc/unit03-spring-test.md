@@ -257,14 +257,17 @@ void login() {
 - @SpringBootTest 是@ContextConfiguration的替代方案
   - @ContextConfiguration需要指定配置类
   - @SpringBootTest 也可以指定配置类
+  - 是组合注解，元注解包括@ExtendWith（从Spring Boot 2.2开始）
 
 - @SpringBootTest 用于**集成测试**，@ContextConfiguration 用于**分片测试**
 - @SpringBootTest注解属性webEnvironment 支持多种测试模式：
   - RANDOM_PORT, DEFINED_PORT, MOCK, NONE（- 随机端口，定义端口，模拟，无） 
-  - @SpringBootTest 可以进行Web应用测试， web应用服务器启动时候，一般占用8080，测试程序如果也使用8080端口，肯定出现端口绑定异常。 使用随机端口参数，就可以避免这个异常，使用随机测试。
-- 测试框架自动启动嵌入式Web服务器
-- 自动配置一个TestRestTemplate 组件 
-- 是组合注解，元注解包括@ExtendWith（从Spring Boot 2.2开始）
+  - @SpringBootTest 可以进行Web应用测试， web应用服务器启动时候，一般占用8080，测试程序如果也使用8080端口，肯定出现端口绑定异常。 使用随机端口参数，就可以避免这个异常。
+- 测试框架自动启动嵌入式Web服务器，可以自动启动
+- 自动配置一个TestRestTemplate 组件
+  -  TestRestTemplate 可以自动找到随机端口，对控制器进行测试
+  - TestRestTemplate 提供了控制器测试方法
+
 
 简单理解： @SpringBootTest  = @ExtendWith + @ContextConfiguration
 
@@ -295,9 +298,18 @@ Tomcat started on port(s): 59640 (http) with context path ''
 
 - TestRestTemplate 和 RestTemplate 都是Spring 提供的HTTP客户端
 - TestRestTemplate提供了便捷的HTTP请求方法，可以用来发起任意的HTTP请求
+  - get请求测试
+  - post请求测试
+  - delete请求
+  - put请求
+  - 自定义请求
+
 - TestRestTemplate是适用于集成测试的RestTemplate的替代品
-- TestRestTemplate 采取相对路径（而不是绝对路径）发起http请求
-- 容错性：当从服务器应用程序收到404等错误响应时，TestRestTemplate不会抛出一个异常, 这样更方便自动化测试
+  - TestRestTemplate 用于集成测试，（无法指定端口号）使用相对路径发请求
+  - RestTemplate 用于发起HTTP远程调用
+  - TestRestTemplate 采取相对路径（而不是绝对路径）发起http请求
+  - 容错性：当从服务器应用程序收到404等错误响应时，TestRestTemplate不会抛出一个异常, 这样更方便自动化测试
+
 - TestRestTemplate配置为忽略cookies和重定向，也是为了便于测试
 
 > TestRestTemplate 和 RestTemplate 之间没有任何的继承关系
@@ -455,41 +467,89 @@ public class MockBeanDemo {
 - 通常情况下，@WebMvcTest与@MockBean结合使用，以模拟其依赖关系
 
 ```java
+package cn.tedu.spring.controller;
+
+
+import cn.tedu.spring.entity.User;
+import cn.tedu.spring.service.UserService;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+
+import javax.annotation.PostConstruct;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+/**
+ * @WebMvcTest 可以对 Web 层（控制器层）进程分片测试
+ * 只测试控制器组件，其他组件一概不测试
+ *  @WebMvcTest(被测试的组件)，Spring Boot 只创建UserController
+ *  的Java bean，其他组件不创建
+ *  UserController 依赖的组件，需要使用@MockBean创建模拟对象，
+ *  Spring 会自动的将模拟对象，注入给 只创建UserController
+ */
 @WebMvcTest(UserController.class)
-public class UserControllerBootTests {
+public class WebMvcTestsDemo {
+    Logger logger = LoggerFactory.getLogger(WebMvcTestsDemo.class);
 
     /**
-     * 注入 mvc 模拟测试工具
-     */
-    @Autowired
-    MockMvc mockMvc;
-
-    /**
-     * 模拟业务层组件， Spring会自动注入给控制器
+     * 利用@MockBean创建被UserController依赖的对象userService
+     * @WebMvcTest 会自动的将userService注入给UserController
      */
     @MockBean
     UserService userService;
 
+    @Autowired
+    MockMvc mockMvc;
+
+    /**
+     * 训练userService的功能，为了测试控制器的功能
+     */
     @PostConstruct
-    public void init(){
-        //训练模拟对象
-        Mockito.when(userService.getById(1))
-                .thenReturn(new User(1, "John", "1234", "ADMIN,USER"));
+    void init(){
+        //训练login方法，此方法是被 UserController login 调用的方法
+        Mockito.when(userService.login("John", "1234"))
+                .thenReturn(new User(1, "John", "1234", "ADMIN"));
+        Mockito.when(userService.getById(2))
+                .thenReturn((new User(2, "Andy", "12", "ADMIN")));
+        logger.debug("完成训练！");
     }
 
     @Test
-    void loginTest() throws Exception{
-        //模拟mvc测试
-        mockMvc.perform(get("/users/1"))  //发起请求
-                .andExpect(status().isOk())          //期待结果是 OK
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON)) //期待返回类型 JSON
-                .andExpect(jsonPath("username").value("John")) //期待JSON中属性
-                .andExpect(jsonPath("password").value("1234")) //期待JSON中属性
-                .andExpect(jsonPath("roles").value("ADMIN,USER")); //期待JSON中属性
+    void login() throws Exception{
+        //URL 中{0}的参数占位符
+        String url = "/users/login?username={0}&pwd={1}";
+        mockMvc.perform(get(url,"John", "1234"))  //请求时候，进行参数替换
+                .andExpect(status().isOk())
+                .andExpect(content().string("登录成功！"));
+
+        logger.debug("测试完成");
     }
+    @Test
+    void getUser() throws Exception{
+        //URL 中{0}的参数占位符
+        String url = "/users/{0}";
+        mockMvc.perform(get(url, 2)) //请求时候，进行参数替换
+                .andExpect(status().isOk())//检查返回的状态码
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON)) //检查contentType
+                .andExpect(jsonPath("username").value("Andy"))//检查返回结果中 json 属性的值
+                .andExpect(jsonPath("password").value("12"))
+                .andExpect(jsonPath("roles").value("ADMIN"));
+        logger.debug("测试完成");
+    }
+
 }
 ```
 
+
+
+命令行参数：
+
+![image-20221204173945313](assets/image-20221204173945313.png)
