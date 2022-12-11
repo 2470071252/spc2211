@@ -20,7 +20,9 @@ public class DemoAspect {
 
     /**
      *  before 方法在 userServiceImpl bean的全部方法之前（@Before）执行
+     *  切入点表达式，可以使用 ||（或运算） 进行连接
      * @param joinPoint 连接点：正在执行的当前方法
+     *
      */
     @Before("bean(userServiceImpl)||bean(awardServiceImpl)")
     public void before(JoinPoint joinPoint){
