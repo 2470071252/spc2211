@@ -1,10 +1,12 @@
 # Unit04 Spring AOP 
 
-## AOP 
+## AOP  面向切面(儿)的程序设计
 
 面向切面(儿)的程序设计（Aspect-oriented programming，AOP，又译作面向方面的程序设计、
 剖面导向程序设计），是计算机科学中的一种程序设计思想，旨在将横切关注点与业务主体进行进一
 步分离，以提高程序代码的模块化程度。
+
+AOP 底层使用动态代理技术
 
 ## AOP 能解决什么问题？
 
@@ -30,7 +32,7 @@ AOP的好处, 将横切关注点独立出来, 统一使用切面组件进行管�
 
 AOP常用的场合, 示例:
 - 日志与跟踪
-- 事务管理
+- 事务管理,  @Transactional的底层就是AOP
 - 安全
 - 缓存
 - 错误处理
@@ -85,11 +87,40 @@ Spring AOP 使用步骤:
    }
    ```
 
+
+
+测试案例：
+
+```java
+@SpringBootTest
+public class DemoAspectTests {
+
+    Logger logger = LoggerFactory.getLogger(DemoAspectTests.class);
+
+    @Autowired
+    UserService userService;
+
+    @Test
+    void tests(){
+        /**
+         * 调用userService方法时候， AOP会在userService的方法之前执行
+         */
+        logger.debug("userService 的类型 {}", userService.getClass().getName());
+        User user = userService.getById(1);
+        logger.debug("getById {}", user);
+        user = userService.getByUsername("tom");
+        logger.debug("getByUsername {}", user);
+    }
+}
+```
+
+
+
 ## AOP 核心概念
 
 AOP的执行原理：
 
-![img_1.png](images/img_3.png)
+![image-20221211100148082](images/image-20221211100148082.png)
 
 - 连接点(JoinPoint)
   - 程序执行过程中的一个点，例如方法的调用，或抛出异常

@@ -106,6 +106,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getByUsername(String username) {
+        logger.debug("获取用户信息{}", username);
         return userDao.findUserByName(username);
     }
 
