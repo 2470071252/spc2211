@@ -23,7 +23,7 @@ public class DemoAspect {
      *  切入点表达式，可以使用 ||（或运算） 进行连接，扩展连接点选择范围
      * @param joinPoint 连接点：正在执行的当前方法
      */
-    @Before("bean(userServiceImpl)||bean(awardServiceImpl)")
+    @Before("PointcutAspect.allServiceBean()")
     public void before(JoinPoint joinPoint){
         // Signature 签名，这里是方法签名=方法名+参数类型列表
         Signature method = joinPoint.getSignature();
