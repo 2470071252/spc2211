@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 
 @Aspect
-@Component
+//@Component
 public class AroundTestAspect {
     Logger logger = LoggerFactory.getLogger(AroundTestAspect.class);
     /**
@@ -31,9 +31,10 @@ public class AroundTestAspect {
             Object result = joinPoint.proceed();
             logger.debug("@Around 在{}方法之之后", signature);
             return result; //返回目标方法的执行结果
+            //return null; //这里可以对结果进行转换处理
         }catch (Throwable e){
             logger.debug("@Around 方法出现异常 {}", e.getMessage());
-            throw e;
+            throw e; //异常原则上必须抛出异常，这里可以对异常进行转换处理
         }finally {
             logger.debug("@Around方法之后");
         }

@@ -6,7 +6,7 @@
 剖面导向程序设计），是计算机科学中的一种程序设计思想，旨在将横切关注点与业务主体进行进一
 步分离，以提高程序代码的模块化程度。
 
-AOP 底层使用动态代理技术
+AOP 底层使用动态代理技术。
 
 ## AOP 能解决什么问题？
 
@@ -135,10 +135,13 @@ AOP的执行原理：
   - 在连接点的执行代码位置:  
     - @Before  正在切入点之前执行
     - @After  正在切入点之后, 无论是否有异常都执行
-    - @AfterThrowing 正在切入点出现异常以后执行
-    - @AfterReturning 正在切入点正在实行结束以后执行
-    - @Around 环绕通知
-
+    - @AfterThrowing 正在切入点出现异常以后执行，只能看到异常，不能处理异常
+    - @AfterReturning 正在切入点正常执行结束以后执行，只能看到返回值，不能处理返回值
+    - @Around 环绕通知，在方法前后都可以插入代码，可以处理异常， 处理返回值，功能过于强大，慎重使用
+      - 转换异常类型
+      - 记录返回结果
+      - 方法前后插入逻辑
+  
 - 切面 Aspect
   - 一个囊括了切入点和Advice的模块
   - 是一个类, 包含全部的 切入点, 通知等
@@ -210,28 +213,33 @@ public void test3(JoinPoint joinPoint, Exception e){
 @Aspect
 @Component
 public class AroundTestAspect {
-
     Logger logger = LoggerFactory.getLogger(AroundTestAspect.class);
-
+    /**
+     * @Around 环绕通知，环绕目标方法执行
+     *         @Around 是万能通知，可以代替 其他4个通知！
+     * @param joinPoint 代表连接点
+     * @return 返回目标方法处理结果
+     * @throws Throwable 抛出业务方法执行异常
+     */
     @Around("bean(userServiceImpl)")
     public Object test(ProceedingJoinPoint joinPoint)
         throws Throwable{
         Signature signature = joinPoint.getSignature();
 
         try {
-            logger.debug("在{}方法之前", signature);
-            //方法之前执行
+            logger.debug("@Around 在{}方法之前", signature);
+            //调用后续的目标业务方法，原则上必须调用！！
             Object result = joinPoint.proceed();
-            //方法之后执行
-            logger.debug("在{}正常方法之后，返回{}", signature, result);
-            return result;
+            logger.debug("@Around 在{}方法之之后", signature);
+            return result; //返回目标方法的执行结果
+            //return null; //这里可以对结果进行转换处理
         }catch (Throwable e){
-            logger.debug("在{}方法出现异常{}时候执行", signature, e.getMessage());
-            throw e;
+            logger.debug("@Around 方法出现异常 {}", e.getMessage());
+            throw e; //异常原则上必须抛出异常，这里可以对异常进行转换处理
         }finally {
-            //无论是否有异常都会执行
-            logger.debug("在{}方法之后", signature);
+            logger.debug("@Around方法之后");
         }
+
     }
 }
 ```
@@ -252,6 +260,8 @@ public class AroundTestAspect {
 - 请谨慎使用 @Around 
 
 > Spring MVC 的统一异常处理 @RestControllerAdvice 就是利用AOP 实现的!
+>
+>  @Transactional 也是利用Around AOP 实现的!
 
 ## 例子: 记录业务执行时间
 
