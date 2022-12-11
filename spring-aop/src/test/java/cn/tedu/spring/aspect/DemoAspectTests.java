@@ -19,8 +19,9 @@ public class DemoAspectTests {
     @Test
     void tests(){
         /**
-         * 调用方法时候， AOP会在方法之前执行
+         * 调用userService方法时候， AOP会在userService的方法之前执行
          */
+        logger.debug("userService 的类型 {}", userService.getClass().getName());
         User user = userService.getById(1);
         logger.debug("getById {}", user);
         user = userService.getByUsername("tom");

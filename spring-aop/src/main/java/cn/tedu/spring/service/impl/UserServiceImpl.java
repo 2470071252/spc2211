@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
+    //@Transactional
     public User regist(String username, String password) {
         if (username==null || password==null) {
             logger.warn("输入参数为空{}, {}", username, password);
@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
+    //@Transactional
     public User login(String username, String password) {
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
             throw new IllegalParameterException("用户名密码不能为空！");
@@ -110,7 +110,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
+    //@Transactional
     public void update(User user) {
         int n = userDao.updateUser(user);
         if (n != 1){

@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 /**
  * @Aspect 来自 AspectJ, Spring 支持这个注解的功能
  * 用于定义切面儿功能组件， 必须和@Component或者@Bean联合使用
@@ -25,6 +27,6 @@ public class DemoAspect {
     public void log(JoinPoint joinPoint){
         // Signature 签名，这里是方法签名=方法名+参数类型列表
         Signature method = joinPoint.getSignature();
-        logger.debug("正在执行{}方法", method);
+        logger.debug("再{}时间，执行{}方法", LocalDateTime.now(), method);
     }
 }

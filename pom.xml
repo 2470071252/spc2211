@@ -15,10 +15,8 @@
         <module>spring-boot</module>
         <!-- Unit03 -->
         <module>spring-test</module>
-
         <!-- Unit04 -->
         <module>spring-aop</module>
-
 
     </modules>
     <name>spc2209</name>
