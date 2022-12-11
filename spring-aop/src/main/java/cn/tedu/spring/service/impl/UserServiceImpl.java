@@ -100,13 +100,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getById(Integer id) {
-        logger.debug("获取用户信息{}", id);
+        logger.debug(" getById 获取用户信息{}", id);
         return userDao.findUserById(id);
     }
 
     @Override
     public User getByUsername(String username) {
-        logger.debug("获取用户信息{}", username);
+        logger.debug(" getByUsername 获取用户信息{}", username);
         return userDao.findUserByName(username);
     }
 
