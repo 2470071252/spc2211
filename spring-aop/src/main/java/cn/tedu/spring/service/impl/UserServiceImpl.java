@@ -88,6 +88,7 @@ public class UserServiceImpl implements UserService {
             logger.warn("密码错误！{} ", password);
             throw new PasswordErrorException("密码错误！");
         }
+        logger.debug("登录成功！");
         return user;
     }
 
