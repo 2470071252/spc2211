@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  * @Aspect 来自 AspectJ, Spring 支持这个注解的功能
  * 用于定义切面儿功能组件， 必须和@Component或者@Bean联合使用
  */
-@Component
+// @Component
 @Aspect
 public class DemoAspect {
     Logger logger = LoggerFactory.getLogger(DemoAspect.class);
