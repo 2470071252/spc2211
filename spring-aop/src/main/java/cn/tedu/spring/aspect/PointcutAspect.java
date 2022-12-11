@@ -18,7 +18,10 @@ public class PointcutAspect {
      * 并且设置对应的 切入点表达式，选择切入位置
      * 以后使用方法名，代表切入点。
      */
-    @Pointcut("bean(userServiceImpl)||bean(awardServiceImpl)")
+    //@Pointcut("bean(userServiceImpl)||bean(awardServiceImpl)")
+    //@Pointcut("execution(* *Service.*(..))") //选择业务层接口全部方法
+    //@Pointcut("execution(* *..UserService.get*(..))") //选择UserService的全部getXXX方法
+    @Pointcut("execution(*..User *Service.get*(*))")//选择业务层get开头方法返回User类型
     public void allServiceBean(){}
 
     /**
