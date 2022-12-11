@@ -606,7 +606,7 @@ public class ListProxyTest {
 }
 ```
 
-显然 静态代理方式，非常繁琐：
+显然 静态代理模式，非常繁琐：
 
 ### JDK动态代理
 
@@ -812,6 +812,22 @@ public class UserServiceCglibTest {
 
 
 
+MyBatis 使用的就是 JDK动态代理
+
+![image-20221211180110730](images/image-20221211180110730.png)
+
+
+
+代理模式：
+
+- 静态代理， 方法多了以后编码繁琐。
+- 动态代理
+  - JDK动态代理
+  - CGLib 动态代理
+- 代理模式可与不改变类的功能，为其扩展功能
+
+- 动态代理：AOP和MyBatis的底层都是动态代理
+
 
 
 ## 经典面试题目: Spring AOP 和动态代理的关系
@@ -828,24 +844,26 @@ public class UserServiceCglibTest {
 - Spring 动态代理(首选选择JDK代理):
   - 如果目标对象有接口, 就使用JDK动态代理
   - 如果目标对象没有接口, 就使用 CGLib动态代理
-- SpringBoot 2 以后(首选CGLib动态代理): 
+- Spring Boot 2 以后(首选CGLib动态代理): 
   - 首选CGLib动态代理
   - 可以在配置文件application.properties中设置为, 首选JDK动态代理
     -  spring.aop.proxy-target-class=false
 
 简单理解: Spring 首选 JDK 动态代理, SpringBoot 2 首选 CGLib动态代理
 
+Spring 启动时候，利用BeanPostProcssor 创建了动态代理, **AbstractAdvisorAutoProxyCreator**
+
 ## 经典面试题目: AOP 的使用场景
 
 - 日志与跟踪
 
-- 事务管理
+- 事务管理: 事务注解
 
-- 安全
+- 安全：权限注解
 
 - 缓存
 
-- 错误处理
+- 错误处理：统一错误处理注解
 
 - 性能监测
 

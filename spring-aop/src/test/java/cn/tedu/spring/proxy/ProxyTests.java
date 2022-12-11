@@ -1,8 +1,10 @@
 package cn.tedu.spring.proxy;
 
+import cn.tedu.spring.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.proxy.Enhancer;
 
 import java.lang.reflect.Proxy;
@@ -38,14 +40,18 @@ public class ProxyTests {
     @Test
     void cglibProxyList(){
         /**
-         * CGLib 动态代理
+         * CGLib 动态代理，直接使用 类 创建代理对象，不需要接口
+         * ArrayList.class 被代理的类型
+         * ArrayListInterceptor 方法拦截器，功能类型方法拦截器
          */
-        ArrayList<String> list=(ArrayList<String>)Enhancer.create(ArrayList.class,
-                new ArrayListInterceptor<String>(new ArrayList<>()));
+        ArrayList<String> list=(ArrayList<String>)
+                Enhancer.create(ArrayList.class, //被代理的类型
+                new ArrayListInterceptor<String>(new ArrayList<>())); //方法拦截器，功能类型方法拦截器
         list.add("Tom");
         list.add("Jerry");
         logger.debug("size {}", list.size());
         logger.debug(" list {}", list);
         logger.debug("类型： {}", list.getClass().getName());
     }
+
 }

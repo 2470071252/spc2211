@@ -35,7 +35,7 @@ public class DemoAspect {
      * @After 方法无论是否出现异常都会执行
      * @param joinPoint
      */
-    @After("bean(userServiceImpl)||bean(awardServiceImpl)")
+    @After("bean(userServiceImpl)||bean(awardServiceImpl)||bean(userController)")
     public void after(JoinPoint joinPoint){
         // Signature 签名，这里是方法签名=方法名+参数类型列表
         Signature method = joinPoint.getSignature();
