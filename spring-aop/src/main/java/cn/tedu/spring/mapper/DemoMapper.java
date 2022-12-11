@@ -7,5 +7,5 @@ import org.apache.ibatis.annotations.Select;
 public interface DemoMapper {
 
     @Select("select 'Hello World!'")
-    public String hello();
+    String hello();
 }

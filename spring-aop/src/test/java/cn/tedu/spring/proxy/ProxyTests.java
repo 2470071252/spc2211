@@ -3,6 +3,7 @@ package cn.tedu.spring.proxy;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cglib.proxy.Enhancer;
 
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
@@ -32,5 +33,19 @@ public class ProxyTests {
         list.add("Tom");
         list.add("Jerry");
         logger.debug("size {} list{}", list.size(), list);
+    }
+
+    @Test
+    void cglibProxyList(){
+        /**
+         * CGLib 动态代理
+         */
+        ArrayList<String> list=(ArrayList<String>)Enhancer.create(ArrayList.class,
+                new ArrayListInterceptor<String>(new ArrayList<>()));
+        list.add("Tom");
+        list.add("Jerry");
+        logger.debug("size {}", list.size());
+        logger.debug(" list {}", list);
+        logger.debug("类型： {}", list.getClass().getName());
     }
 }
