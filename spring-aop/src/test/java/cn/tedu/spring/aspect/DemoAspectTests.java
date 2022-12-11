@@ -1,6 +1,7 @@
 package cn.tedu.spring.aspect;
 
 import cn.tedu.spring.entity.User;
+import cn.tedu.spring.exception.PasswordErrorException;
 import cn.tedu.spring.exception.UserNotFoundException;
 import cn.tedu.spring.service.UserService;
 import org.junit.jupiter.api.Assertions;
@@ -46,5 +47,8 @@ public class DemoAspectTests {
             userService.login("Hi","1234");
         });
         logger.debug("已经出现异常");
+        Assertions.assertThrows(PasswordErrorException.class, ()->{
+            userService.login("tom","aaaa");
+        });
     }
 }
