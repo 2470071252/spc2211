@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  * @Aspect 来自 AspectJ, Spring 支持这个注解的功能
  * 用于定义切面儿功能组件， 必须和@Component或者@Bean联合使用
  */
-// @Component
+@Component
 @Aspect
 public class DemoAspect {
     Logger logger = LoggerFactory.getLogger(DemoAspect.class);
@@ -22,7 +22,7 @@ public class DemoAspect {
      *  before 方法在 userServiceImpl bean的全部方法之前（@Before）执行
      * @param joinPoint 连接点：正在执行的当前方法
      */
-    @Before("bean(userServiceImpl)")
+    @Before("bean(userServiceImpl)||bean(awardServiceImpl)")
     public void before(JoinPoint joinPoint){
         // Signature 签名，这里是方法签名=方法名+参数类型列表
         Signature method = joinPoint.getSignature();
@@ -34,7 +34,7 @@ public class DemoAspect {
      * @After 方法无论是否出现异常都会执行
      * @param joinPoint
      */
-    @After("bean(userServiceImpl)")
+    @After("bean(userServiceImpl)||bean(awardServiceImpl)")
     public void after(JoinPoint joinPoint){
         // Signature 签名，这里是方法签名=方法名+参数类型列表
         Signature method = joinPoint.getSignature();
@@ -47,7 +47,7 @@ public class DemoAspect {
      * @param value 返回值，就是方法正常结束的返回值
      *              如果是login方法，则value就应该的登录成功的用户信息
      */
-    @AfterReturning(pointcut = "bean(userServiceImpl)", returning = "value")
+    @AfterReturning(pointcut = "bean(userServiceImpl)||bean(awardServiceImpl)", returning = "value")
     public void afterThrowing(JoinPoint joinPoint, Object value){
         Signature signature = joinPoint.getSignature();
         logger.debug("@AfterReturning 方法{}返回之后执行，返回值{}", signature, value);
@@ -58,7 +58,7 @@ public class DemoAspect {
      * @param joinPoint 连接点
      * @param e 方法抛出的异常
      */
-    @AfterThrowing(pointcut = "bean(userServiceImpl)", throwing = "e")
+    @AfterThrowing(pointcut = "bean(userServiceImpl)||bean(awardServiceImpl)", throwing = "e")
     public void afterThrowing(JoinPoint joinPoint, Throwable e){
         Signature signature = joinPoint.getSignature();
         logger.debug("@AfterThrowing 方法 {} 出现异常: {}", signature, e.getMessage());
