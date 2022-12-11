@@ -16,6 +16,10 @@
         <!-- Unit03 -->
         <module>spring-test</module>
 
+        <!-- Unit04 -->
+        <module>spring-aop</module>
+
+
     </modules>
     <name>spc2209</name>
     <description>Demo project for Spring Boot</description>
