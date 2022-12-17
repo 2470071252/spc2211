@@ -3,25 +3,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.tedu</groupId>
-    <artifactId>spc2211</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>spring-mvc</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <modules>
-        <!-- Unit01 -->
-        <module>spring-ioc</module>
-        <module>spring-demo</module>
-        <!-- Unit02 -->
-        <module>spring-life-cycle</module>
-        <module>spring-boot</module>
-        <!-- Unit03 -->
-        <module>spring-test</module>
-        <!-- Unit04 -->
-        <module>spring-aop</module>
-        <!-- Unit05 -->
-        <module>spring-mvc</module>
-
-    </modules>
-    <name>spc2209</name>
+    <name>spring-mvc</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
@@ -34,10 +18,24 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <scope>runtime</scope>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -48,6 +46,12 @@
                     <artifactId>junit-vintage-engine</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <!-- 操作以 .xlsx 为后缀的 Excel -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>4.1.2</version>
         </dependency>
     </dependencies>
 
@@ -80,7 +84,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>2.3.7.RELEASE</version>
                 <configuration>
-                    <mainClass>cn.tedu.spc2209.Spc2209Application</mainClass>
+                    <mainClass>cn.tedu.springmvc.SpringMvcApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>
