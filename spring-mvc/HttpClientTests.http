@@ -47,6 +47,9 @@ Content-Type: application/json
   "roles": "ADMIN"
 }
 
+### 测试Excel下载：
+GET http://localhost:8080/demo/excel
+
 
 
 
