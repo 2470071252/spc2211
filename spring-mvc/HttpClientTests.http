@@ -62,5 +62,29 @@ Content-Type: application/json
   "roles": "ADMIN,USER"
 }
 
+### 测试 Rest API 获取全部用户信息
+GET http://localhost:8080/users
+Accept: application/json
+
+### 测试 Rest API 获取一个用户信息
+GET http://localhost:8080/users/5
+Accept: application/json
+
+### 测试 Rest API 的修改功能
+PUT http://localhost:8080/users
+Accept: application/json
+Content-Type: application/json
+
+{
+  "id": 5,
+  "username": "Andy",
+  "password": "ABCD",
+  "role": "ADMIN"
+}
+
+### Rest API 删除用户信息
+DELETE http://localhost:8080/users/5
+Accept: application/json
+
 
 
