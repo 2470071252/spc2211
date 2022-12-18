@@ -61,4 +61,13 @@ public class RestTemplateTests {
         restTemplate.put(url, user);
     }
 
+    @Test
+    void delete(){
+        /*
+         * 删除 用户信息
+         */
+        String url = "http://localhost:8080/users/{0}";
+        restTemplate.delete(url, 7);
+    }
+
 }
