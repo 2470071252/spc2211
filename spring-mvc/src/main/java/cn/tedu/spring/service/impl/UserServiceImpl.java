@@ -101,7 +101,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getById(Integer id) {
         logger.debug("获取用户信息{}", id);
-        return userDao.findUserById(id);
+        User user = userDao.findUserById(id);
+        if (user == null){
+            throw new UserNotFoundException("没有用户："+id);
+        }
+        return user;
     }
 
     @Override
