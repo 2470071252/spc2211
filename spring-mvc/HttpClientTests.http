@@ -1,0 +1,17 @@
+### GET 请求参数处理演示, 发送全部参数
+GET http://localhost:8080/demo/getparam?username=Tom&password=1234&goto=123
+Accept: application/json
+
+### GET 请求参数处理演示，不发送可选参数 username
+GET http://localhost:8080/demo/getparam?password=1234&goto=123
+Accept: application/json
+
+### GET 请求参数处理演示，不发送必须参数 password，会发生异常: Required String parameter 'password' is not present
+GET http://localhost:8080/demo/getparam?goto=123
+Accept: application/json
+
+### POST 请求参数处理演示
+POST http://localhost:8080/demo/postparam
+Content-Type: application/x-www-form-urlencoded
+
+username=Jerry&password=111&goto=beijing

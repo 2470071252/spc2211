@@ -72,15 +72,15 @@ SpringMVC处理请求的过程 -- **面试考点**
 1. @Controller 控制器：用于配合组件扫描（@ComponentScan）创建控制器对象，常与@RequestMapping注解结合使用，其元注解包括@Component
 2. @RestController  Rest控制器: 一个方便的注解，它元注解有@Controller和@ResponseBody注解。
 3. @ResponseBody 响应体/响应正文:  表明控制器方法的返回值绑定到HTTP响应体。
-    - 使用@ResponseBody后，不再调用ModelAndView以及视图解析器，而会自动调用MessageConverter, 将返回的数据转换为某种特定格式（json，xml），装入响应体
+    - 使用@ResponseBody后，不再返回ModelAndView以及视图解析器，而会自动调用MessageConverter, 将返回的数据转换为某种特定格式（json，xml），装入响应体
 4. @RequstMapping 请求映射：使用@RequestMapping注解来映射请求到控制器方法
     - 这个注解可以在类和方法级别上使用。
     - 在方法层面上，应用程序将倾向于使用HTTP方法特定的变体之一@GetMapping、@PostMapping、@PutMapping、@DeleteMapping或@PatchMapping。
 5. @GetMapping Get请求映射：用于将HTTP GET请求映射到特定的处理方法的注解。
     - @GetMapping是组合注解，是@RequestMapping(method = RequestMethod.GET)的快捷方式。
 6. @PostMapping Post请求映射 用于将HTTP POST请求映射到特定的处理方法的注解。
-    - @GetMapping是组合注解，是@RequestMapping(method = RequestMethod.POST)的快捷方式。
-7. @RequestBody 请求实体， 标注在方法参数上，表示网络请求正文映射到丰富参数。
+    - @PostMapping是组合注解，是@RequestMapping(method = RequestMethod.POST)的快捷方式。
+7. @RequestBody 请求实体， 标注在方法参数上，表示网络请求正文映射到方法参数。
     - 请求的主体通过一个HttpMessageConverter来解析方法参数。经常用于讲将json数据转换存储到参数对象中。
 8. @RequestParam 请求参数：将请求参数映射到控制器的方法参数上
 9. @PathVariable 路径变量：将请求路径上“**URI模版**”映射到控制器的方法参数上
