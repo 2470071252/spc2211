@@ -15,3 +15,32 @@ POST http://localhost:8080/demo/postparam
 Content-Type: application/x-www-form-urlencoded
 
 username=Jerry&password=111&goto=beijing
+
+### POST 请求测试可选参数 username
+POST http://localhost:8080/demo/postparam
+Content-Type: application/x-www-form-urlencoded
+
+password=111&goto=beijing
+
+### POST 请求测试必须参数 password， 服务器出现错误：Required String parameter 'password' is not present
+POST http://localhost:8080/demo/postparam
+Content-Type: application/x-www-form-urlencoded
+
+goto=beijing
+
+### 测试，从请求路径中映射变量
+GET http://localhost:8080/demo/users/5
+Accept: application/json
+
+### 测试， 利用请求路径传递两个变量
+GET http://localhost:8080/demo/user/18/item/102
+Accept: application/json
+
+
+
+
+
+
+
+
+

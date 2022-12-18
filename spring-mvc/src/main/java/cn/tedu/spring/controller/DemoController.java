@@ -49,6 +49,16 @@ public class DemoController {
         return "OK";
     }
 
+    /**
+     * 在请求路径上，映射两个变量
+     */
+    @GetMapping("/user/{id}/item/{iid}")
+    public String pathVariables(@PathVariable Integer id,
+                                @PathVariable Integer iid){
+        logger.debug("id {}, iid {}", id, iid);
+        return "OK";
+    }
+
     @PostMapping("/register")
     public String register(@RequestBody User user){
         logger.debug("user {}", user);
