@@ -39,4 +39,26 @@ public class RestTemplateTests {
             logger.debug("{}", user);
         }
     }
+
+    @Test
+    void post(){
+        /*
+         * post 向服务器添加数据
+         */
+        String url = "http://localhost:8080/users";
+        User user = new User(null, "Mac", "abc", "ADMIN");
+        User u = restTemplate.postForObject(url, user, User.class);
+        logger.debug("{}", u);
+    }
+
+    @Test
+    void put(){
+        /*
+         * put 修改服务器上的用户信息
+         */
+        String url = "http://localhost:8080/users";
+        User user = new User(4, "tony", "abc123", "ADMIN");
+        restTemplate.put(url, user);
+    }
+
 }
