@@ -121,8 +121,9 @@ public class MessageConverterTests {
 
 SpringBoot自动配置的内容
 
+- 配置了内嵌 Tomcat Web服务器
 - 设置一个DispatcherServlet
-- 设置内部配置以支持控制器，如： handlerMapping ViewResolver
+- 设置内部配置以支持控制器，如： handlerMapping、 ViewResolver
 - 设置默认的资源位置（images, CSS, JavaScript）
    - 可以使用 spring.resources.static-locations 属性 重新设置新的静态资源位置
 - 设置默认的MessageConverters
@@ -149,8 +150,8 @@ username=Tom&password=123&goto=Beijing
 ```
 
 控制器中接受键值对参数需要使用注解@RequestParam: 
-- 不添加 @RequestParam 是可选参数，参数名称和请求参数名称一致就可以接收数据
-- 添加 @RequestParam 后，默认属性是必须参数， 没有参数则出现异常
+- 不添加 @RequestParam 是可选参数，控制器参数名称和请求参数名称一致就可以接收数据
+- 添加 @RequestParam 后，默认属性是必须参数， 没有传递参数则出现异常
 - @RequestParam 可以使用属性名称， 映射特殊参数名称，比如goto
     - goto 是Java关键字， 不能作为变量名称
 ```java
@@ -226,6 +227,125 @@ Content-Type: application/json
 }
 ```
 > 注意: JSON的Content-Type类型：application/json
+
+
+
+关于 @RequestBody 和 @ResponseBody 
+
+- @RequestBody 和 @ResponseBody 的功能都是利用 HttpMessageConvertor 发挥的功能
+- HttpMessageConvertor 是可以扩展的！
+  - 可以扩展 Excel 的上传和下载 HttpMessageConvertor
+  - 可以扩展 身份证的上传和下载 HttpMessageConvertor
+
+### 扩展MessageConvertor的例子
+
+利用MessageConvertor 实现Excel的下载：
+
+![image-20221218120224720](images/image-20221218120224720.png)
+
+导入Excel API
+
+```xml
+<!-- 操作以 .xlsx 为后缀的 Excel API -->
+<dependency>
+    <groupId>org.apache.poi</groupId>
+    <artifactId>poi-ooxml</artifactId>
+    <version>4.1.2</version>
+</dependency>
+```
+
+扩展MessageConvertor：
+
+```java
+package cn.tedu.spring.web;
+
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.http.HttpInputMessage;
+import org.springframework.http.HttpOutputMessage;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.converter.HttpMessageNotWritableException;
+import org.springframework.http.server.ServletServerHttpResponse;
+import org.springframework.stereotype.Component;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+@Component
+public class ExcelMessageConverter implements HttpMessageConverter {
+    private Class excelObjectClass = XSSFWorkbook.class;
+    private MediaType mediaType = new MediaType("application", "xlsx");
+    private String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    @Override
+    public boolean canRead(Class aClass, MediaType mediaType) {
+        //MappingJackson2HttpMessageConverter
+        return false;
+    }
+
+    @Override
+    public boolean canWrite(Class aClass, MediaType mediaType) {
+        if (aClass.equals(excelObjectClass)){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public List<MediaType> getSupportedMediaTypes() {
+        List<MediaType> list = new ArrayList<>();
+        list.add(mediaType);
+        return list;
+    }
+
+    @Override
+    public Object read(Class aClass, HttpInputMessage httpInputMessage) throws IOException, HttpMessageNotReadableException {
+
+        return null;
+    }
+
+    @Override
+    public void write(Object o, MediaType mediaType, HttpOutputMessage httpOutputMessage) throws IOException, HttpMessageNotWritableException {
+        if (! (o instanceof XSSFWorkbook)){
+            return;
+        }
+        XSSFWorkbook workbook = (XSSFWorkbook) o;
+        ByteArrayOutputStream buf = new ByteArrayOutputStream();
+        workbook.write(buf);
+        workbook.close();
+        buf.close();
+        byte[] bytes = buf.toByteArray();
+        ServletServerHttpResponse response = (ServletServerHttpResponse) httpOutputMessage;
+
+        response.getServletResponse().addHeader("Content-Length", bytes.length+"");
+        response.getServletResponse().addHeader("Content-Type", contentType);
+        response.getBody().write(bytes);
+    }
+}
+```
+
+> 这个是一个不严谨的演示实例！！ 只是为了演示 对 HttpMessageConvertor的扩展
+
+控制器返回 XSSFWorkbook workbook 对象：
+
+```java
+@GetMapping("/excel")
+@ResponseBody
+public XSSFWorkbook excel(){
+    XSSFWorkbook workbook = new XSSFWorkbook();
+    XSSFSheet sheet = workbook.createSheet("Demo");
+    sheet.createRow(0).createCell(0).setCellValue("Hello World!");
+    return workbook;
+}
+```
+
+浏览器客户端测试： http://localhost:8080/demo/excel 
+
+
+
+
 
 ## RestFul编程
 

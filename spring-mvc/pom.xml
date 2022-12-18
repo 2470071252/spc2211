@@ -47,7 +47,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- 操作以 .xlsx 为后缀的 Excel -->
+        <!-- 操作以 .xlsx 为后缀的 Excel API -->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
