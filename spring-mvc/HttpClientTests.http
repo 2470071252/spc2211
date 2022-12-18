@@ -36,7 +36,16 @@ Accept: application/json
 GET http://localhost:8080/demo/user/18/item/102
 Accept: application/json
 
+### POST 请求发送JSON 数据, 服务器可以使用 @RequestBody 接收
+POST http://localhost:8080/demo/register
+Content-Type: application/json
 
+{
+  "id": 12,
+  "username": "Andy",
+  "password": "123abc",
+  "roles": "ADMIN"
+}
 
 
 
