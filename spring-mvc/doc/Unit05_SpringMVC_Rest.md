@@ -241,8 +241,6 @@ Content-Type: application/json
 
 利用MessageConvertor 实现Excel的下载：
 
-![image-20221218120224720](images/image-20221218120224720.png)
-
 导入Excel API
 
 ```xml
@@ -409,8 +407,7 @@ RESTFul推荐的方案：
 
 ```java
 @PostMapping("/users")
-@RequestBody
-void addUser(..){..}
+void addUser(@RequestBody User user){..}
 
 @DeleteMapping("/users/{uid}")
 void deleteUser(Integer uid){..}
@@ -419,8 +416,7 @@ void deleteUser(Integer uid){..}
 void findUserById(Integer uid){..}
 
 @PutMapping("/users/{uid}")
-@RequestBody
-void updateUser(Integer uid){..}
+void updateUser(Integer uid, @RequestBody User user){..}
 ```
 
 > Elasticsearch 中严格遵守RESTFul
@@ -576,9 +572,9 @@ public class ExceptionAdvice {
 
 ### RestTemplate 客户端
 
-RestTemplate Reat模板
+RestTemplate Rest模板
 
-Template 设计模式， 模板设计模式：将负责的业务流程进行封装， 自需要使用很少添加代码就可以而完成复杂逻辑，Thread 类是最典型的模板设计模式！！！
+Template 设计模式， 模板设计模式：将复杂的业务流程进行封装，只需要添加很少代码就可以而完成复杂逻辑，Thread 类是最典型的模板设计模式！！！
 
 RestTemplate 客户端: 是Spring 提供的用于作为Rest客户端，调用Rest接口的API, 往往用于整合业务组件， 从一个模块调用另外一个模块的数据。
 
@@ -631,6 +627,10 @@ public class RestTemplateTests {
 
 
 ## ResponseEntity 创建自定义响应
+
+ResponseEntity： 响应实体，Spring MVC 提供的API， 用于生成自定义的响应结果！
+
+在Spring 如果需要发送”任意“响应消息，把需要响应数据，状态码，响应头，都存储到ResponseEntity对象中，使用ResponseEntity作为控制器返回结果。
 
 大部分情况，Spring MVC都能很好的自动处理 HTTP 响应，但是如果需要向浏览器发送自定义响应时候，就可以使用ResponseEntity 定义任意的HTTP响应。
 
@@ -686,9 +686,11 @@ public ResponseEntity export() throws Exception{
 
 
 
-### Spring SpringBoot SpringMVC Tomcat  的关系
+### Spring、Spring Boot、Spring MVC、Tomcat  的关系
 
-- Spring 特指Spring 框架， 是Spring 全家桶的基础，可以单独使用，包含IOC/DI 、AOP 基本功能，需要使用复杂配置文件，配置复杂
+- Spring 特指Spring 框架， 是Spring 全家桶的基础，可以单独使用，包含IOC/DI 、AOP 基本功能，
+    - 单独使用Spring 时候，需要使用复杂配置文件，使用不方便。
+
 - Tomcat 是可以独立使用Web服务器，需要编写Servlet / JSP，繁琐的Web开发
 - Spring MVC，基于Spring和Tomcat，提供简化Web开发，但是配置复杂繁琐
 - Spring Boot，在 Spring、Tomcat、Spring MVC 等基础上，提供了自动化配置功能，简化配置和开发。

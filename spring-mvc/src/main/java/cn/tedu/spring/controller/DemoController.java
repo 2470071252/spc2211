@@ -68,8 +68,9 @@ public class DemoController {
     @GetMapping("/headers")
     public String headers(String name,
                           @RequestHeader("Accept") String accept,
-                          @RequestHeader("User-Agent") String ua){
-        logger.debug("{}，{}，{}", name, accept, ua);
+                          @RequestHeader("User-Agent") String ua,
+                          @RequestHeader("Authorization") String token){
+        logger.debug("{}，{}，{}，{}", name, accept, ua, token);
         return "OK";
     }
 

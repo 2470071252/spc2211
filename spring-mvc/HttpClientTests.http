@@ -90,5 +90,9 @@ Content-Type: application/json
 DELETE http://localhost:8080/users/5
 Accept: application/json
 
-
+### @RequestHeader 测试
+GET http://localhost:8080/demo/headers?name=Andy
+Accept: application/json
+User-Agent: HttpClient
+Authorization: 123456
 
