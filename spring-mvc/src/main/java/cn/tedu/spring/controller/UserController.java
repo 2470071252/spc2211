@@ -25,7 +25,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public void addUser(@RequestBody User user){
         userService.addUser(user);
-        logger.debug("添加完成");
+        logger.debug("添加完成：{}", user);
     }
 
     @GetMapping("/{id}")

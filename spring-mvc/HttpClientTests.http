@@ -51,8 +51,16 @@ Content-Type: application/json
 GET http://localhost:8080/demo/excel
 
 
+### 测试 Rest API 添加用户信息
+POST http://localhost:8080/users
+Content-Type: application/json
 
-
+{
+  "id": null,
+  "username": "Wang",
+  "password": "abc123",
+  "roles": "ADMIN,USER"
+}
 
 
 
