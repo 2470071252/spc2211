@@ -1,6 +1,6 @@
 package cn.tedu.spring.controller;
 
-import cn.tedu.springmvc.entity.User;
+import cn.tedu.spring.entity.User;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;

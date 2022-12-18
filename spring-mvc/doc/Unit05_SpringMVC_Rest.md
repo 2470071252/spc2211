@@ -1,10 +1,10 @@
-# SpringMVC 和 RESTFul
+# Unit05 Spring MVC 和 RESTFul
 
 ## Spring MVC
 
 ### 什么是Spring MVC
 
-它的正式名称 "Spring Web MVC "来自其源模块的名称（spring-webmvc），但它更多地被称为 "Spring MVC"。
+它的正式名称 "Spring Web MVC"来自其源模块的名称（spring-webmvc），但它更多地被称为 "Spring MVC"。
 
 Spring MVC是MVC模式的Web框架，提供了一整套Web编程的组件，可以轻松方便的处理Web请求。
 
@@ -24,6 +24,16 @@ MVC 组件概述？说说什么是MVC？你理解MVC是什么？
 - V View 视图，就是用户界面， 负责呈现业务数据， 接受用户请求 常用的View包括：Vue、JSP、Thymeleaf
 
 - C Controller 控制器， 负责处理用户的请求，根据请求调用业务模型，再根据业务处理结果，选择合适的view
+
+**MVC 不等于 3层结构！！！**
+
+![image-20221218092423324](images/image-20221218092423324.png)
+
+- MVC 是界面设计模式：  Model  模型 View 视图 Controller 控制器
+
+- 3层结构，软件整体结构：表现层（Spring MVC），业务层，数据层（MyBatis）
+
+  
 
 ## HTTP 协议
 

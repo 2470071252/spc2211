@@ -1,7 +1,7 @@
 package cn.tedu.spring.controller;
 
-import cn.tedu.springmvc.exception.UserNotFoundException;
-import cn.tedu.springmvc.exception.UsernameExistsException;
+import cn.tedu.spring.exception.UserNotFoundException;
+import cn.tedu.spring.exception.UsernameExistsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
