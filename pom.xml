@@ -19,6 +19,9 @@
         <module>spring-aop</module>
         <!-- Unit05 -->
         <module>spring-mvc</module>
+        <!-- Unit06 -->
+        <module>spring-jdbc-tx</module>
+        <module>spring-jdbc</module>
 
     </modules>
     <name>spc2209</name>
