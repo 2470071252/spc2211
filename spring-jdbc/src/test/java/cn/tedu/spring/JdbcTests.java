@@ -8,6 +8,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 
 @SpringBootTest
@@ -27,5 +30,17 @@ public class JdbcTests {
         logger.debug("jdbcTemplate {}", jdbcTemplate.getClass().getName());
         logger.debug("driver {}", dataSource.getConnection().getClass().getName());
         logger.debug("Database {}", dataSource.getConnection().getMetaData());
+    }
+
+    @Test
+    void createTable(){
+        String sql = "create table product (id int, name varchar(50))";
+        try(Connection conn = dataSource.getConnection()){
+            Statement statement = conn.createStatement();
+            boolean b =  statement.execute(sql);
+            logger.debug("创建了数据库, 是否有结果集{}", b);
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 }
