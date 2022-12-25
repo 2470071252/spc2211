@@ -6,7 +6,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 public class UserServiceTests {
@@ -37,11 +40,13 @@ public class UserServiceTests {
     }
 
     @Test
+    @Transactional
+    @Rollback
     void regist(){
         /*
          * 测试：注册送积分，设置了事务
          */
-         User user = userService.regist("Mac", "123");
+         User user = userService.regist("Maca", "123");
          logger.debug(" {}", user);
     }
 }

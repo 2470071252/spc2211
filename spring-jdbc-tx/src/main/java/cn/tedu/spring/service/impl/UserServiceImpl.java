@@ -99,7 +99,8 @@ public class UserServiceImpl implements UserService {
      *
      */
     @Override
-    @Transactional(rollbackFor = Exception.class, timeout = 40 )
+    @Transactional(rollbackFor = Exception.class, timeout = 40,
+    isolation = Isolation.READ_COMMITTED)
     public User regist(String username, String password) {
         if (username==null || password==null) {
             logger.warn("输入参数为空{}, {}", username, password);

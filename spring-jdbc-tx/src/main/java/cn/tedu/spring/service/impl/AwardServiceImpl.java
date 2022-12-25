@@ -36,7 +36,7 @@ public class AwardServiceImpl implements AwardService {
      * 如果当前有事务，就参与到当前事务
      */
     @Override
-    @Transactional(propagation = Propagation.NEVER)
+    @Transactional(propagation = Propagation.REQUIRED)
     public void grantAward(User user, String description, Integer point) {
         Award award = awardDao.findAwardByUserId(user.getId());
         if (award == null){
