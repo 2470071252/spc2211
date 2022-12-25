@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Sun Dec 25 09:39:57 CST 2022:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-0185-46ef-c579-0000133c4480 
+on database directory memory:C:\Users\liuca\IdeaProjects\spc2211\spring-jdbc\907acb23-d922-47d4-9b32-8a2f5636eeef with class loader sun.misc.Launcher$AppClassLoader@18b4aac2 
+Loaded from file:/C:/Users/liuca/.m2/repository/org/apache/derby/derby/10.14.2.0/derby-10.14.2.0.jar
+java.vendor=Azul Systems, Inc.
+java.runtime.version=1.8.0_312-b07
+user.dir=C:\Users\liuca\IdeaProjects\spc2211\spring-jdbc
+os.name=Windows 10
+os.arch=amd64
+os.version=10.0
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''

@@ -26,11 +26,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
-<!--        &lt;!&ndash; 添加内嵌数据库，会自动创建DataSource和JdbcTemplate &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.apache.derby</groupId>-->
-<!--            <artifactId>derby</artifactId>-->
-<!--        </dependency>-->
+        <!-- 添加内嵌数据库，会自动创建DataSource和JdbcTemplate -->
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+        </dependency>
 
 
         <dependency>
