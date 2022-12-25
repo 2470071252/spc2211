@@ -19,11 +19,16 @@ public class JdbcTests {
     @Autowired
     DataSource dataSource;
 
+    /**
+     * Spring Boot starter jdbc 自动配置时候, 如果发现了 DataSource 被配置了
+     * 就会自动创建 jdbcTemplate
+     */
     @Autowired
     JdbcTemplate jdbcTemplate;
 
     @Test
     void test() throws Exception{
+        //Spring Boot 会根据数据库配置,自动切换数据库连接
         logger.debug("dataSource {}", dataSource.getClass().getName());
         logger.debug("jdbcTemplate {}", jdbcTemplate.getClass().getName());
         logger.debug("driver {}", dataSource.getConnection().getClass().getName());

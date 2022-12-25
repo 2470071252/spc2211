@@ -57,7 +57,7 @@ Spring JDBC 是Spring提供的持久层解决方案， 轻量化封装，简化�
 
 1. 在Spring Boot 项目中导入相关依赖
 
-```java
+```xml
 <!-- mysql驱动依赖 -->
 <dependency>         
   <groupId>mysql</groupId>
@@ -89,11 +89,23 @@ https://db.apache.org/derby/docs/10.16/getstart/index.html
 ### 关于spring-boot-starter-jdbc自动配置
 
 1. 添加依赖spring-boot-starter-jdbc后, 如果没有添加其他任何依赖，启动报错误 
+
+   1. Failed to determine a suitable driver class (未能确定合适的(JDBC)驱动类)
+
 2. 添加了内嵌数据库Derby后会自动创建HikariDataSource和JdbcTemplate
+
+   1. 自动创建内嵌数据库连接, 连接到Derby 数据库
+   2. 建议使用数据库连接配置:  创建数据库 mydb
+
+      ```properties
+      spring.datasource.url=jdbc:derby:mydb;create=true
+      ```
+
 3. 如果依赖了spring-boot-starter-jdbc 和 JDBC 驱动，
-   并且在application.yml设置的数据库连接参数，会自动创建创建HikariDataSource和JdbcTemplate
+   并且在application.yml设置的数据库连接参数，会自动创建创建HikariDataSource和JdbcTemplate, 连接到新的数据库. 不再使用内嵌的Derby数据库
 4. 如果配置了自定义的DataSource类型的Bean对象，则Spring Boot 就不再创建HikariDataSource对象，
    这样就实现了自定义DataSource配置
+5. 只要存在 DataSource 类型的对象, Spring Boot 就会自动创建 JdbcTemplate
 
 ### 关于数据库连接池
 
