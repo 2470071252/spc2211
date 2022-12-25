@@ -31,4 +31,10 @@ public class UserDaoTests {
         logger.debug("User {}", user);
         Assertions.assertNotNull(user.getId());
     }
+
+    @Test
+    void countUsers(){
+        Integer n = userDao.countUsers();
+        logger.debug("Users: {}", n);
+    }
 }

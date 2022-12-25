@@ -56,7 +56,7 @@ public class UserDaoJdbcImpl implements UserDao {
             // Statement.RETURN_GENERATED_KEYS参数, 表示需要返回生成的ID
             PreparedStatement ps = con.prepareStatement(sql,
                     PreparedStatement.RETURN_GENERATED_KEYS);
-            //替换ps参数
+            //设置ps参数
             ps.setString(1, user.getUsername());
             ps.setString(2, user.getPassword());
             ps.setString(3, user.getRoles());
