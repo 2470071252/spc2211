@@ -255,9 +255,9 @@ void addUser(){
 
 查询简单类型 -- int  long   String   LocalDate。。。。。。
 
-~~~
+```
 jdbcTemplate.queryForObject(sql,Class returnType, parameter...)
-~~~
+```
 
 例子:
 
@@ -284,9 +284,9 @@ Generic Maps  -- 用Map封装查询结果, 了解即可，因为语义不清, �
 
 查询的结果以键值对保存在map中，不会将数据封装入对象中，可读性差，了解即可。
 
-~~~java
+```java
 jdbcTemplate.queryForList(sql,Object...args) - List<Map<k,v>>
-~~~
+```
 
 ![Map](assets/img_1.png)
 
@@ -435,14 +435,14 @@ void findByNameNull(){
 
 定义(背下来): 事务是数据库中执行操作的最小执行单元，不可再分，要么全都执行成功，要么全都执行失败。
 
-#### 事务特性(背下来)
+### 事务特性(背下来)
 
 - A 原子性: 一组操作作为一个不可再分的单元
 - C 一致性: 数据结果处理后, 总数不变, 前后一致
 - I 隔离性: 事务之间彼此独立隔离, 互不影响
 - D 持久性: 事务处理完成以后,数据永久保存, 持久存在
 
-#### 传统Java事务管理的问题
+### 传统Java事务管理的问题
 
 - 持久层框架不同，事务使用的API不同的
   - 不同框架使用不同的API方法编程处理事务, 代码不统一
@@ -453,7 +453,7 @@ void findByNameNull(){
   - 分布式事务是指多台服务器事务
   - 传统方式 API 也不同
 
-#### Spring声明式事务
+### Spring声明式事务
 
 - 提供了注解@Transactional，来进行事务管理, 添加上该注解，开启事务管理的机制
   - 无需编码, 自动处理, 简化了事务处理编程!
@@ -461,7 +461,7 @@ void findByNameNull(){
   - 分布式事务, 也采用统一的注解 @Transactional
 - 在运行期，调用某个目标业务方法时，若检测到方法上有该注解，则开启事务管理，将切面中的通知代码织入到目标业务代码中，事务管理的通知是环绕通知。
 
-#### Spring事务管理优势
+### Spring事务管理优势
 
 - 统一事务处理风格: 解决了持久层框架不同，使用API不同的问题--解决办法是通过平台事务管理器
 - 使用AOP解决了代码重复问题，将事务管理的关注点代码提取到切面中，在运行期动态的进行织入
@@ -495,7 +495,7 @@ public class TxTests {
 }
 ```
 
-#### @Transactional注解的用法
+### @Transactional注解的用法
 
 可以用于以下位置：
 
@@ -550,7 +550,7 @@ void testUserService(){
 }
 ```
 
-#### 声明式事务管理原理
+### 声明式事务管理原理
 
 ![image-20221106180731753](assets/image-20221106180731753.png)
 

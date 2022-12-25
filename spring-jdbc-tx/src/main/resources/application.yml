@@ -1,0 +1,17 @@
+# 应用名称
+spring:
+  application:
+    name: spring-jdbc-tx
+  datasource:
+    url: jdbc:mysql://localhost:3306/spring_test?characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true
+    username: root
+    password: root
+
+server:
+  port: 8080
+
+logging:
+  level:
+    cn:
+      tedu:
+        spring: debug
