@@ -277,7 +277,7 @@ void addUser(){
 
 查询简单类型 -- int  long   String   LocalDate。。。。。。
 
-```
+```java
 jdbcTemplate.queryForObject(sql,Class returnType, parameter...)
 ```
 
@@ -595,7 +595,7 @@ void testUserService(){
 
 - 传播级别 -- 面试题, 属性：propagation
   - 属性值：7个
-  - required:  默认的    当前无事务则新建事务，当前有事务则延用当前事务 
+  - required:  默认的    当前无事务则创建新建事务，当前有事务则延用当前事务 
   - requires_new:   当前无事务，创建新事务；当前有事务，暂停当前事务，创建新事务
   - mandatory: 强制的  当前存在事务，使用当前事务，当前无事务，抛出异常
   - never：始终在无事务情况下执行，当前无事务，继续在无事务状态下执行，若当前有事务，抛出异常
@@ -682,7 +682,7 @@ MySQL 默认是 Repeatable read（可重复读）
 ```sql
 -- 查看当前事物级别：
 SELECT @@tx_isolation; # MariaDB 10
-select @@transaction_isolation; # MYSQL8
+SELECT @@transaction_isolation; # MYSQL8
 SELECT @@SESSION.transaction_isolation; # MYSQL8
 
 -- 设置mysql的隔离级别：
