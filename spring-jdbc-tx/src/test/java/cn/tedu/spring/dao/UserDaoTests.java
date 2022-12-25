@@ -52,4 +52,14 @@ public class UserDaoTests {
         List<User> list = userDao.findAllUser();
         list.forEach(user -> logger.debug("User {}", user));
     }
+
+    @Test
+    void findUserByName(){
+        User user = userDao.findUserByName("jerry");
+        Assertions.assertEquals("jerry", user.getUsername());
+        logger.debug("user {}", user);
+        user = userDao.findUserByName("Hook");
+        Assertions.assertNull(user);
+        logger.debug("user {}", user);
+    }
 }
