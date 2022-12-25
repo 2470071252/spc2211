@@ -25,7 +25,6 @@ import java.util.List;
  * 类上定义@Transactional属性，传播到每个方法上
  */
 @Service
-@Transactional(timeout = 30)
 public class UserServiceImpl implements UserService {
 
     Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
@@ -98,8 +97,7 @@ public class UserServiceImpl implements UserService {
      *
      */
     @Override
-    @Transactional(timeout = 40, rollbackFor = {Exception.class},
-        isolation = Isolation.READ_COMMITTED)
+    @Transactional
     public User regist(String username, String password) {
         if (username==null || password==null) {
             logger.warn("输入参数为空{}, {}", username, password);
@@ -132,7 +130,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    //@Transactional
     public User login(String username, String password) {
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
             throw new IllegalParameterException("用户名密码不能为空！");
