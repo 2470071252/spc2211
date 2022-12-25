@@ -8,9 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 
 @SpringBootTest
@@ -37,10 +35,42 @@ public class JdbcTests {
         String sql = "create table product (id int, name varchar(50))";
         try(Connection conn = dataSource.getConnection()){
             Statement statement = conn.createStatement();
-            boolean b =  statement.execute(sql);
+            boolean b = statement.execute(sql);
+            //true if the first result is a ResultSet object;
+            //false if it is an update count or there are no results
             logger.debug("创建了数据库, 是否有结果集{}", b);
         }catch (SQLException e){
             e.printStackTrace();
         }
     }
+    @Test
+    void insertData(){
+        String sql = "insert into product (id, name) values (?,?)";
+        try(Connection conn = dataSource.getConnection()){
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setInt(1, 1);
+            preparedStatement.setString(2, "手机");
+            int n = preparedStatement.executeUpdate();
+            logger.debug("插入数据 {}", n);
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    void selectData(){
+        String sql = "select * from product";
+        try(Connection conn = dataSource.getConnection()){
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                logger.debug("{} {}", rs.getInt("id"),
+                        rs.getString("name"));
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+
 }
