@@ -46,4 +46,10 @@ public class UserDaoTests {
         List<Map<String, Object>> list = userDao.findAllUsers();
         list.forEach(map->logger.debug("{}", map));
     }
+
+    @Test
+    void findAllUser(){
+        List<User> list = userDao.findAllUser();
+        list.forEach(user -> logger.debug("User {}", user));
+    }
 }
