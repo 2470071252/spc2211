@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
@@ -25,6 +26,7 @@ import java.util.List;
  * 类上定义@Transactional属性，传播到每个方法上
  */
 @Service
+@Transactional(timeout = 30)
 public class UserServiceImpl implements UserService {
 
     Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
@@ -97,7 +99,7 @@ public class UserServiceImpl implements UserService {
      *
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class, timeout = 40 )
     public User regist(String username, String password) {
         if (username==null || password==null) {
             logger.warn("输入参数为空{}, {}", username, password);
@@ -123,9 +125,9 @@ public class UserServiceImpl implements UserService {
         logger.debug("注册成功！{}", user);
         //注册送积分
         awardService.grantAward(user, "注册", 100);
-        if (i==1){
-            throw new RuntimeException("测试故障");
-        }
+        //if (i==1){
+        //    throw new RuntimeException("测试故障");
+        //}
         return user;
     }
 
