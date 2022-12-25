@@ -120,12 +120,12 @@ public class UserServiceImpl implements UserService {
             logger.warn("注册用户失败！");
             throw new RegistrationFailedException("注册用户失败！");
         }
-//        if (i==1){
-//            throw new RuntimeException("测试故障");
-//        }
         logger.debug("注册成功！{}", user);
         //注册送积分
         awardService.grantAward(user, "注册", 100);
+        if (i==1){
+            throw new RuntimeException("测试故障");
+        }
         return user;
     }
 

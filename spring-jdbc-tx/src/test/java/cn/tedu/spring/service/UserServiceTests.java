@@ -1,5 +1,6 @@
 package cn.tedu.spring.service;
 
+import cn.tedu.spring.entity.User;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,5 +34,14 @@ public class UserServiceTests {
         // transactionManager 自动支持，统一管理，简单配置后，就能够
         // 统一处理事务。
         logger.debug("{}", transactionManager.getClass().getName());
+    }
+
+    @Test
+    void regist(){
+        /*
+         * 测试：注册送积分，设置了事务
+         */
+         User user = userService.regist("Mac", "123");
+         logger.debug(" {}", user);
     }
 }
