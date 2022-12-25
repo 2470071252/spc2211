@@ -6,6 +6,8 @@ import cn.tedu.spring.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -18,7 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 
-@Repository
+@Repository //仓库
+@ConditionalOnMissingBean(UserDaoPureJdbcImpl.class)
 public class UserDaoJdbcImpl implements UserDao {
 
     Logger logger = LoggerFactory.getLogger(UserDaoJdbcImpl.class);

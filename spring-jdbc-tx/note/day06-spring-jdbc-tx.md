@@ -122,6 +122,12 @@ Java 提供了数据库连接管理接口 javax.sql.DataSource
 
 
 
+## JDBC / 驱动/ 数据库连接池
+
+![image-20221225112038874](images/image-20221225112038874.png)
+
+
+
 ### JdbcTemplate的使用
 
 导入spring-boot-starter-jdbc依赖、JDBC驱动依赖，并且配置了数据源后，

@@ -5,6 +5,7 @@ import cn.tedu.spring.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -15,7 +16,7 @@ import java.util.Map;
 /**
  * 传统 JDBC 数据库访问API
  */
-// @Repository
+//@Repository
 public class UserDaoPureJdbcImpl implements UserDao {
 
     private Logger logger = LoggerFactory.getLogger(UserDaoPureJdbcImpl.class);
